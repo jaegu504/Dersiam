@@ -5,7 +5,7 @@
  * Zero emojis - 100% Bilingual
  */
 
-import { booksData, booksMetadata } from '../data/books.js';
+import { booksData } from '../data/books.js';
 
 const ARABIC_UNICODE_REGEX = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
 
@@ -48,7 +48,8 @@ export function normalizeArabic(text) {
     .replace(/ک/g, 'ك')
     .replace(/ؤ/g, 'و')
     .replace(/[ءـ]/g, '')
-    .replace(/[،؛:!\?؟\(\)\[\]\{\}"'«»\/\.\\\-–—\^]/g, ' ')
+    .replace(/[،؛؟٪٫٬«»\.,:;!\x27\"\(\)\[\]\{\}\/\\<>\-_+=*&^%$#@~`|]/g, ' ')
+    .replace(/[^\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF0-9\u0660-\u0669\u06F0-\u06F9\s]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -181,8 +182,11 @@ function scoreField(fieldRaw, isArQuery, normQ, tokens) {
   let score = 0;
   let matchedWords = 0;
 
-  // Exact full phrase match
-  if (normQ && normField.includes(normQ)) {
+  const fieldWords = new Set(normField.split(/\s+/).filter(Boolean));
+
+  // Full phrase match (for single-word queries, require exact whole-word match in Set)
+  const isPhraseMatch = tokens.length <= 1 ? fieldWords.has(normQ) : normField.includes(normQ);
+  if (isPhraseMatch) {
     score += 60;
   }
 
@@ -196,15 +200,14 @@ function scoreField(fieldRaw, isArQuery, normQ, tokens) {
     }
   }
 
-  // Individual token matches
+  // Individual token matches using Set for fast and safe word boundary matching
   for (const t of tokens) {
-    const wholeWordRegex = new RegExp('\\b' + t + '\\b');
-    if (wholeWordRegex.test(normField)) {
+    if (fieldWords.has(t)) {
       matchedWords++;
-      score += 15;
+      score += 20;
     } else if (normField.includes(t)) {
-      matchedWords += 0.5;
-      score += 5;
+      matchedWords += 0.1;
+      score += 2;
     }
   }
 

@@ -168,6 +168,37 @@ describe('Universal Bilingual Search Engine', () => {
       const resultsZero = searchAllBooks('hukum', 0);
       expect(resultsZero).toEqual([]);
     });
+
+    it('handles special and regex characters safely without throwing SyntaxError', () => {
+      expect(() => searchAllBooks('***+++???()[]{}')).not.toThrow();
+      expect(searchAllBooks('***+++???()[]{}')).toEqual([]);
+
+      expect(() => searchAllBooks('wudhu + taharah (bersuci)?')).not.toThrow();
+      const results = searchAllBooks('wudhu + taharah (bersuci)?');
+      expect(results.length).toBeGreaterThan(0);
+      expect(results.some(r => r.item.bookKey === 'quduri')).toBe(true);
+
+      expect(() => searchAllBooks('فقه*+?')).not.toThrow();
+      const arResults = searchAllBooks('فقه*+?');
+      expect(arResults.length).toBeGreaterThan(0);
+      expect(arResults.some(r => r.item.bookKey === 'quduri')).toBe(true);
+    });
+
+    it('performs exact Arabic whole-word matching using word boundary token sets', () => {
+      const results = searchAllBooks('فقه');
+      expect(results.length).toBeGreaterThan(0);
+      expect(results[0].score).toBeGreaterThan(0);
+      // Normalized field should contain the exact word token
+      const topTokens = normalizeArabic(results[0].item.question_tr + ' ' + results[0].item.answer_tr).split(/\s+/);
+      expect(topTokens).toContain('فقه');
+
+      // Verify book-level Arabic whole-word search in Quduri
+      const quduriResults = searchBook('quduri', 'فقه');
+      expect(quduriResults.length).toBeGreaterThan(0);
+      expect(quduriResults[0].item.id).toBe('quduri-001');
+      const quduriTokens = normalizeArabic(quduriResults[0].item.answer_tr).split(/\s+/);
+      expect(quduriTokens).toContain('فقه');
+    });
   });
 
   describe('Zero Emoji Policy', () => {
