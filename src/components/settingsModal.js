@@ -349,7 +349,7 @@ export function openSettingsModal(store) {
                 <input type="radio" name="setting-algorithm" value="random"${activeAlgo === 'random' || activeAlgo === 'original' ? ' checked' : ''} />
                 <span class="font-medium text-sm">${d.algoOriginal}</span>
               </label>
-              <button class="algo-info-btn neu-button p-2" data-algo="random" aria-label="Bilgi" title="${d.algoExplanationTitle}">
+              <button class="algo-info-btn neu-button p-2" data-algo="random" aria-label="${d.algoExplanationTitle}" title="${d.algoExplanationTitle}">
                 ${getIconSvg('help', 16)}
               </button>
             </div>
@@ -360,7 +360,7 @@ export function openSettingsModal(store) {
                 <input type="radio" name="setting-algorithm" value="sequential"${activeAlgo === 'sequential' ? ' checked' : ''} />
                 <span class="font-medium text-sm">${d.algoSequential}</span>
               </label>
-              <button class="algo-info-btn neu-button p-2" data-algo="sequential" aria-label="Bilgi" title="${d.algoExplanationTitle}">
+              <button class="algo-info-btn neu-button p-2" data-algo="sequential" aria-label="${d.algoExplanationTitle}" title="${d.algoExplanationTitle}">
                 ${getIconSvg('help', 16)}
               </button>
             </div>
@@ -371,7 +371,7 @@ export function openSettingsModal(store) {
                 <input type="radio" name="setting-algorithm" value="spaced"${activeAlgo === 'spaced' ? ' checked' : ''} />
                 <span class="font-medium text-sm">${d.algoSpaced}</span>
               </label>
-              <button class="algo-info-btn neu-button p-2" data-algo="spaced" aria-label="Bilgi" title="${d.algoExplanationTitle}">
+              <button class="algo-info-btn neu-button p-2" data-algo="spaced" aria-label="${d.algoExplanationTitle}" title="${d.algoExplanationTitle}">
                 ${getIconSvg('help', 16)}
               </button>
             </div>
