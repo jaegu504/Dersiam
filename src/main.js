@@ -5,6 +5,8 @@ import { renderHomeView } from './components/homeView.js';
 import { renderStudyView } from './components/studyView.js';
 import { renderExamView } from './components/examView.js';
 import { renderReaderView } from './components/readerView.js';
+import { openSearchModal } from './components/searchModal.js';
+import { openSettingsModal } from './components/settingsModal.js';
 
 /**
  * Initializes the application lifecycle and reactive view mounting.
@@ -80,11 +82,44 @@ export function initApp(appRoot = document.getElementById('app'), appStore = sto
     }
   });
 
+  // Modal trigger handlers
+  function handleOpenSearch() {
+    openSearchModal(appStore);
+  }
+
+  function handleOpenSettings() {
+    openSettingsModal(appStore);
+  }
+
+  function handleGlobalKeyDown(e) {
+    const activeTag = document.activeElement?.tagName;
+    const isEditing = activeTag === 'INPUT' || activeTag === 'TEXTAREA' || activeTag === 'SELECT';
+
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+      e.preventDefault();
+      openSearchModal(appStore);
+    } else if (e.key === '/' && !isEditing) {
+      e.preventDefault();
+      openSearchModal(appStore);
+    }
+  }
+
+  if (typeof window !== 'undefined') {
+    window.addEventListener('open-search', handleOpenSearch);
+    window.addEventListener('open-settings', handleOpenSettings);
+    window.addEventListener('keydown', handleGlobalKeyDown);
+  }
+
   return {
     headerUnmount,
     viewUnmount: () => {
       if (typeof currentViewUnmount === 'function') currentViewUnmount();
       if (typeof unsubscribeView === 'function') unsubscribeView();
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('open-search', handleOpenSearch);
+        window.removeEventListener('open-settings', handleOpenSettings);
+        window.removeEventListener('keydown', handleGlobalKeyDown);
+      }
     }
   };
 }

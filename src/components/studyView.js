@@ -41,7 +41,7 @@ export function renderStudyView(container, store) {
   let activeChapter = state.activeChapter || 'all';
   let isAnswerRevealed = Boolean(state.isAnswerRevealed);
   let isNoteOpen = false;
-  let currentIndex = 0;
+  let currentIndex = typeof state.currentQuestionIndex === 'number' ? state.currentQuestionIndex : 0;
   const displayedIndices = [];
 
   let progress = loadUserProgress(activeBook);
@@ -640,9 +640,10 @@ export function renderStudyView(container, store) {
 
     if (nextState.activeBook !== prevState?.activeBook) {
       activeBook = nextState.activeBook || 'quduri';
+      activeChapter = nextState.activeChapter || 'all';
       progress = loadUserProgress(activeBook);
       questions = getFilteredQuestions();
-      currentIndex = 0;
+      currentIndex = typeof nextState.currentQuestionIndex === 'number' ? nextState.currentQuestionIndex : 0;
       displayedIndices.length = 0;
       isAnswerRevealed = false;
       updateChapterOptions();
@@ -651,7 +652,7 @@ export function renderStudyView(container, store) {
     } else if (nextState.activeChapter !== prevState?.activeChapter) {
       activeChapter = nextState.activeChapter || 'all';
       questions = getFilteredQuestions();
-      currentIndex = 0;
+      currentIndex = typeof nextState.currentQuestionIndex === 'number' ? nextState.currentQuestionIndex : 0;
       displayedIndices.length = 0;
       isAnswerRevealed = false;
       updateChapterOptions();
