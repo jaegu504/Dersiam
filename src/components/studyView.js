@@ -10,6 +10,7 @@ import { getNextQuestion, getNextSequentialQuestion } from '../state/algorithms.
 import { loadUserProgress, saveUserProgress, recordSelfEvaluation, toggleStarred, saveNote } from '../state/storage.js';
 import { playPureSfx } from '../services/audio.js';
 import { getIconSvg } from './icons.js';
+import { renderSidebar } from './sidebarView.js';
 
 /**
  * Returns visibility state for the study flashcard answer and evaluation controls.
@@ -70,6 +71,9 @@ export function renderStudyView(container, store) {
 
   function getFilteredQuestions() {
     const rawQuestions = getBookQuestions();
+    if (activeChapter === 'starred') {
+      return rawQuestions.filter((q) => progress.starredIds && progress.starredIds.includes(q.id));
+    }
     if (!activeChapter || activeChapter === 'all') {
       return rawQuestions;
     }
@@ -84,6 +88,7 @@ export function renderStudyView(container, store) {
     if (!progress.viewedIds.includes(currentItem.id)) {
       progress.viewedIds.push(currentItem.id);
       saveUserProgress(activeBook, progress);
+      store.setState({ lastProgressUpdate: Date.now() });
     }
   }
 
@@ -131,8 +136,13 @@ export function renderStudyView(container, store) {
           </button>
         </div>
 
-        <!-- Chapter Select & Star -->
+        <!-- Chapter Select, Star & Sidebar Evaluation Toggle -->
         <div class="flex items-center gap-3">
+          <button id="btn-toggle-eval" class="neu-button" aria-label="${initialDict.evalHeading || initialDict.dashboardTitle || 'Değerlendirme'}" title="${initialDict.evalHeading || initialDict.dashboardTitle || 'Değerlendirme'}">
+            ${getIconSvg('chart', 18)}
+            <span class="toggle-eval-label text-xs hidden sm:inline">${initialDict.evalHeading || initialDict.dashboardTitle || 'Değerlendirme'}</span>
+          </button>
+
           <select id="chapter-select" class="neu-input text-xs py-2 px-3 rounded-lg bg-surface border border-subtle" aria-label="${initialDict.selectChapter || 'Bölüm Seçiniz'}">
           </select>
 
@@ -142,75 +152,83 @@ export function renderStudyView(container, store) {
         </div>
       </header>
 
-      <!-- Main Flashcard Card -->
-      <article class="study-card neu-card flex flex-col gap-6 p-6 md:p-8" id="study-card">
-        <!-- Card Header Info -->
-        <div class="flex items-center justify-between gap-2 border-b border-subtle pb-3">
-          <div class="flex items-center gap-2">
-            <span id="chapter-badge" class="neu-badge neu-badge-accent text-xs"></span>
-            <span id="number-badge" class="neu-badge text-xs hidden"></span>
-          </div>
-          <span id="question-counter" class="neu-badge neu-badge-info text-xs font-bold"></span>
-        </div>
+      <!-- Main Content Area: Study Card + Evaluation Sidebar Mount -->
+      <div class="study-layout flex flex-col lg:flex-row gap-6 items-start w-full">
+        <div class="study-main-col flex flex-col gap-6 flex-1 min-w-0 w-full">
+          <!-- Main Flashcard Card -->
+          <article class="study-card neu-card flex flex-col gap-6 p-6 md:p-8" id="study-card">
+            <!-- Card Header Info -->
+            <div class="flex items-center justify-between gap-2 border-b border-subtle pb-3">
+              <div class="flex items-center gap-2">
+                <span id="chapter-badge" class="neu-badge neu-badge-accent text-xs"></span>
+                <span id="number-badge" class="neu-badge text-xs hidden"></span>
+              </div>
+              <span id="question-counter" class="neu-badge neu-badge-info text-xs font-bold"></span>
+            </div>
 
-        <!-- Empty State Container -->
-        <div id="empty-state" class="empty-state flex flex-col items-center justify-center p-8 text-center hidden">
-          <p class="text-secondary max-w-md text-sm">
-            ${initialDict.noQuestionsInScope || 'Bu seçilen kapsamda herhangi bir soru bulunamadı.'}
-          </p>
-          <button id="btn-reset-chapter" class="neu-button neu-button-primary mt-4">
-            ${initialDict.allChapters || 'Tüm Kitap (Bütün Bölümler)'}
-          </button>
-        </div>
-
-        <!-- Question Body -->
-        <div id="question-container" class="question-container py-2">
-          <div id="question-text"></div>
-        </div>
-
-        <!-- Answer Box (Hidden until revealed) -->
-        <div id="answer-box" class="answer-box flex flex-col gap-5 pt-5 border-t border-subtle hidden">
-          <div id="answer-text"></div>
-
-          <!-- Self-Assessment Buttons (Strictly inside revealed answer container) -->
-          <div class="self-assessment-row flex flex-wrap items-center justify-between gap-3 pt-2">
-            <div class="flex items-center gap-2">
-              <button id="btn-eval-repeat" class="neu-button btn-eval-repeat" aria-label="${initialDict.evalRepeat || 'Tekrar Et'}">
-                ${getIconSvg('cross', 18)}
-                <span class="eval-repeat-label">${initialDict.evalRepeat || 'Tekrar Et'}</span>
-              </button>
-              <button id="btn-eval-remembered" class="neu-button btn-eval-remembered" aria-label="${initialDict.evalRemembered || 'Hatırladım'}">
-                ${getIconSvg('check', 18)}
-                <span class="eval-remembered-label">${initialDict.evalRemembered || 'Hatırladım'}</span>
+            <!-- Empty State Container -->
+            <div id="empty-state" class="empty-state flex flex-col items-center justify-center p-8 text-center hidden">
+              <p class="text-secondary max-w-md text-sm">
+                ${initialDict.noQuestionsInScope || 'Bu seçilen kapsamda herhangi bir soru bulunamadı.'}
+              </p>
+              <button id="btn-reset-chapter" class="neu-button neu-button-primary mt-4">
+                ${initialDict.allChapters || 'Tüm Kitap (Bütün Bölümler)'}
               </button>
             </div>
 
-            <!-- Utilities: Copy Q&A + Personal Note -->
-            <div class="flex items-center gap-2">
-              <button id="btn-copy-qa" class="neu-button" aria-label="${initialDict.copyText || 'Metni Kopyala'}" title="${initialDict.copyText || 'Metni Kopyala'}">
-                ${getIconSvg('copy', 18)}
-                <span class="copy-qa-label text-xs hidden sm:inline">${initialDict.copyText || 'Metni Kopyala'}</span>
-              </button>
-              <button id="btn-note-toggle" class="neu-button" aria-label="${initialDict.addNote || 'Faide Notu'}" title="${initialDict.addNote || 'Faide Notu'}">
-                ${getIconSvg('pencil', 18)}
-                <span class="note-toggle-label text-xs hidden sm:inline">${initialDict.addNote || 'Faide Notu'}</span>
-              </button>
+            <!-- Question Body -->
+            <div id="question-container" class="question-container py-2">
+              <div id="question-text"></div>
             </div>
-          </div>
 
-          <!-- Private Note Expanding Container -->
-          <div id="note-container" class="note-container flex flex-col gap-2 mt-2 p-4 rounded-xl bg-surface border border-subtle hidden">
-            <label for="note-textarea" class="note-input-label text-xs font-semibold text-secondary">${initialDict.addNote || 'Faide Notu Ekle'}</label>
-            <textarea id="note-textarea" rows="3" class="neu-input w-full p-3 rounded-lg text-sm bg-surface-elevated border border-subtle" placeholder="${initialDict.notePlaceholder || 'Ders notlarınızı buraya kaydedebilirsiniz...'}"></textarea>
-            <div class="flex justify-end mt-1">
-              <button id="btn-save-note" class="neu-button neu-button-primary text-xs">
-                ${getIconSvg('check', 14)}
-                <span class="save-note-label">${initialDict.saveNote || 'Notu Kaydet'}</span>
-              </button>
+            <!-- Answer Box (Hidden until revealed) -->
+            <div id="answer-box" class="answer-box flex flex-col gap-5 pt-5 border-t border-subtle hidden">
+              <div id="answer-text"></div>
+
+              <!-- Self-Assessment Buttons (Strictly inside revealed answer container) -->
+              <div class="self-assessment-row flex flex-wrap items-center justify-between gap-3 pt-2">
+                <div class="flex items-center gap-2">
+                  <button id="btn-eval-repeat" class="neu-button btn-eval-repeat" aria-label="${initialDict.evalRepeat || 'Tekrar Et'}">
+                    ${getIconSvg('cross', 18)}
+                    <span class="eval-repeat-label">${initialDict.evalRepeat || 'Tekrar Et'}</span>
+                  </button>
+                  <button id="btn-eval-remembered" class="neu-button btn-eval-remembered" aria-label="${initialDict.evalRemembered || 'Hatırladım'}">
+                    ${getIconSvg('check', 18)}
+                    <span class="eval-remembered-label">${initialDict.evalRemembered || 'Hatırladım'}</span>
+                  </button>
+                </div>
+
+                <!-- Utilities: Copy Q&A + Personal Note -->
+                <div class="flex items-center gap-2">
+                  <button id="btn-copy-qa" class="neu-button" aria-label="${initialDict.copyText || 'Metni Kopyala'}" title="${initialDict.copyText || 'Metni Kopyala'}">
+                    ${getIconSvg('copy', 18)}
+                    <span class="copy-qa-label text-xs hidden sm:inline">${initialDict.copyText || 'Metni Kopyala'}</span>
+                  </button>
+                  <button id="btn-note-toggle" class="neu-button" aria-label="${initialDict.addNote || 'Faide Notu'}" title="${initialDict.addNote || 'Faide Notu'}">
+                    ${getIconSvg('pencil', 18)}
+                    <span class="note-toggle-label text-xs hidden sm:inline">${initialDict.addNote || 'Faide Notu'}</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Private Note Expanding Container -->
+              <div id="note-container" class="note-container flex flex-col gap-2 mt-2 p-4 rounded-xl bg-surface border border-subtle hidden">
+                <label for="note-textarea" class="note-input-label text-xs font-semibold text-secondary">${initialDict.addNote || 'Faide Notu Ekle'}</label>
+                <textarea id="note-textarea" rows="3" class="neu-input w-full p-3 rounded-lg text-sm bg-surface-elevated border border-subtle" placeholder="${initialDict.notePlaceholder || 'Ders notlarınızı buraya kaydedebilirsiniz...'}"></textarea>
+                <div class="flex justify-end mt-1">
+                  <button id="btn-save-note" class="neu-button neu-button-primary text-xs">
+                    ${getIconSvg('check', 14)}
+                    <span class="save-note-label">${initialDict.saveNote || 'Notu Kaydet'}</span>
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
+          </article>
         </div>
-      </article>
+
+        <!-- Evaluation Sidebar Mount -->
+        <aside id="sidebar-mount" class="study-sidebar-col w-full lg:w-80 lg:shrink-0"></aside>
+      </div>
 
       <!-- Tactile Floating Action Dock -->
       <nav class="floating-dock" aria-label="Flashcard Navigation">
@@ -233,6 +251,8 @@ export function renderStudyView(container, store) {
   `;
 
   // Element handles
+  const btnToggleEval = container.querySelector('#btn-toggle-eval');
+  const toggleEvalLabel = container.querySelector('.toggle-eval-label');
   const chapterSelect = container.querySelector('#chapter-select');
   const starBtn = container.querySelector('#btn-star');
   const starIconEl = starBtn.querySelector('.star-icon');
@@ -266,6 +286,10 @@ export function renderStudyView(container, store) {
   const modeExamLabel = container.querySelector('.mode-exam-label');
   const modeReaderLabel = container.querySelector('.mode-reader-label');
 
+  // Mount Evaluation Dashboard Sidebar
+  const sidebarMountEl = container.querySelector('#sidebar-mount');
+  const unmountSidebar = sidebarMountEl ? renderSidebar(sidebarMountEl, store) : () => {};
+
   // Repopulate chapter select options
   function updateChapterOptions() {
     const lang = store.getState().activeLang || 'tr';
@@ -275,6 +299,7 @@ export function renderStudyView(container, store) {
 
     const options = [
       `<option value="all"${activeChapter === 'all' ? ' selected' : ''}>${dict.allChapters || 'Tüm Kitap (Bütün Bölümler)'}</option>`,
+      ...(activeChapter === 'starred' ? [`<option value="starred" selected>${dict.filterStarred || (isTr ? 'Yıldızlı Sorular' : 'Soal Berbintang')}</option>`] : []),
       ...chapters.map((ch) => {
         const chName = isTr ? ch.nameTr : ch.nameId;
         return `<option value="${ch.id}"${activeChapter === ch.id ? ' selected' : ''}>${chName}</option>`;
@@ -373,6 +398,15 @@ export function renderStudyView(container, store) {
     modeStudyLabel.textContent = dict.studyMode || 'Normal Mütalaa';
     modeExamLabel.textContent = dict.examMode || 'İmtihan Modu';
     modeReaderLabel.textContent = dict.readerMode || 'Düz Okuma';
+
+    if (btnToggleEval) {
+      const evalTitle = dict.evalHeading || dict.dashboardTitle || 'Değerlendirme';
+      btnToggleEval.setAttribute('aria-label', evalTitle);
+      btnToggleEval.setAttribute('title', evalTitle);
+      if (toggleEvalLabel) {
+        toggleEvalLabel.textContent = evalTitle;
+      }
+    }
   }
 
   // Navigation functions
@@ -435,6 +469,7 @@ export function renderStudyView(container, store) {
     saveUserProgress(activeBook, progress);
     playPureSfx('click');
     updateCard();
+    store.setState({ lastProgressUpdate: Date.now() });
   }
 
   // Bind interactive events once
@@ -485,6 +520,7 @@ export function renderStudyView(container, store) {
     playPureSfx('chime');
     showToast(dict.evalConfirmedRemembered || 'Hafızaya kaydedildi');
     updateCard();
+    store.setState({ lastProgressUpdate: Date.now() });
   });
 
   btnEvalRepeat.addEventListener('click', () => {
@@ -498,6 +534,7 @@ export function renderStudyView(container, store) {
     playPureSfx('click');
     showToast(dict.evalConfirmedRepeat || 'Tekrar listesine eklendi');
     updateCard();
+    store.setState({ lastProgressUpdate: Date.now() });
   });
 
   container.querySelector('#btn-copy-qa')?.addEventListener('click', () => {
@@ -623,6 +660,10 @@ export function renderStudyView(container, store) {
     } else if (nextState.activeLang !== prevState?.activeLang) {
       updateChapterOptions();
       updateCard();
+    } else if (typeof nextState.currentQuestionIndex === 'number' && nextState.currentQuestionIndex !== currentIndex) {
+      currentIndex = nextState.currentQuestionIndex;
+      markCurrentViewed();
+      updateCard();
     }
   });
 
@@ -631,6 +672,9 @@ export function renderStudyView(container, store) {
   updateCard();
 
   return () => {
+    if (typeof unmountSidebar === 'function') {
+      unmountSidebar();
+    }
     if (typeof window !== 'undefined') {
       window.removeEventListener('keydown', handleKeyDown);
     }

@@ -259,6 +259,82 @@ select {
   animation: clozeReveal 0.8s ease-out forwards;
 }
 
+/* Study Layout & Evaluation Sidebar */
+.study-layout {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 1.5rem;
+}
+
+.study-main-col {
+  flex: 1 1 0%;
+  min-width: 0;
+  width: 100%;
+}
+
+.study-sidebar-col {
+  width: 100%;
+}
+
+.sidebar-panel {
+  width: 100%;
+}
+
+@media (max-width: 1023px) {
+  .sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 990;
+    transition: opacity 0.3s ease;
+  }
+
+  .sidebar-panel-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 320px;
+    max-width: 85vw;
+    height: 100vh;
+    z-index: 1000;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow-y: auto;
+    box-shadow: var(--neu-floating);
+  }
+
+  .sidebar-panel-drawer.sidebar-open {
+    transform: translateX(0);
+  }
+}
+
+@media (min-width: 1024px) {
+  .study-layout {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .study-sidebar-col {
+    width: 20rem;
+    flex-shrink: 0;
+  }
+
+  .sidebar-backdrop {
+    display: none !important;
+  }
+
+  .sidebar-panel-drawer {
+    position: static;
+    transform: none !important;
+    height: auto;
+    width: 100%;
+  }
+}
+
 @media (max-width: 820px) {
   .app-container {
     padding: 0 0.75rem 5.5rem;
