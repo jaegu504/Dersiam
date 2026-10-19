@@ -72,11 +72,13 @@ describe('Data Schema and Bilingual Dictionary', () => {
     });
   });
 
-  it('ensures each question has cloze keywords in both languages', () => {
+  it('ensures each question has cloze keywords that are substrings of answers', () => {
     Object.values(booksData).forEach(items => {
       items.forEach(item => {
         expect(item.clozeKeyWord_tr).toBeTruthy();
         expect(item.clozeKeyWord_id).toBeTruthy();
+        expect(item.answer_tr).toContain(item.clozeKeyWord_tr);
+        expect(item.answer_id).toContain(item.clozeKeyWord_id);
       });
     });
   });
