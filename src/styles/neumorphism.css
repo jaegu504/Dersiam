@@ -284,3 +284,32 @@
   border-color: var(--accent-primary);
   box-shadow: var(--neu-inset);
 }
+
+/* Exam Mode Component Styles */
+.timer-warning {
+  color: var(--danger-color) !important;
+  background-color: var(--danger-surface) !important;
+  border-color: var(--danger-color) !important;
+  transition: all 0.3s ease;
+}
+
+.revealed-highlight {
+  display: inline-block;
+  background-color: var(--warning-surface);
+  color: var(--warning-color);
+  border: 1px solid var(--warning-color);
+  box-shadow: 0 0 10px rgba(176, 125, 24, 0.45);
+  transition: all 0.25s ease;
+}
+
+.cloze-placeholder {
+  display: inline-block;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: background-color 0.2s ease;
+}
+
+.cloze-placeholder:hover {
+  background-color: rgba(245, 158, 11, 0.3);
+}
+

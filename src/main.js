@@ -3,6 +3,7 @@ import store from './state/store.js';
 import { renderHeader } from './components/header.js';
 import { renderHomeView } from './components/homeView.js';
 import { renderStudyView } from './components/studyView.js';
+import { renderExamView } from './components/examView.js';
 
 /**
  * Initializes the application lifecycle and reactive view mounting.
@@ -38,6 +39,8 @@ export function initApp(appRoot = document.getElementById('app'), appStore = sto
       currentViewUnmount = renderHomeView(viewMount, appStore);
     } else if (currentView === 'study') {
       currentViewUnmount = renderStudyView(viewMount, appStore);
+    } else if (currentView === 'exam') {
+      currentViewUnmount = renderExamView(viewMount, appStore);
     } else {
       // Placeholder for next stages (study, exam, reader)
       const state = appStore.getState();
