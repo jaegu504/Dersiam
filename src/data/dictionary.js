@@ -1,0 +1,280 @@
+/**
+ * Comprehensive 100% Bilingual UI Dictionary (TR ⇄ ID)
+ * Zero emojis - All icons use dedicated SVG components.
+ */
+
+export const dictionary = {
+  tr: {
+    // Brand & Header
+    brandTitle: "Klasik Medrese Portal",
+    brandSubtitle: "5 Temel Eser Mütalaa ve İmtihan Sistemi",
+    homeNav: "Ana Sayfa",
+    searchNav: "Genel Arama",
+    settingsNav: "Ayarlar",
+    themeToggle: "Temayı Değiştir",
+    themeDark: "Karanlık Mod",
+    themeLight: "Aydınlık Mod",
+    langToggle: "Endonezceye Geç",
+    langTr: "Osmanlıca / Türkçe",
+    langId: "Endonezce",
+
+    // Home Screen
+    welcomeTitle: "Beş Temel Klasik Kitap",
+    welcomeSubtitle: "Ezberleme, mütalaa ve imtihan portalına hoş geldiniz. Çalışmak istediğiniz ilim dalını ve kitabı seçiniz.",
+    selectBook: "Kitap Seçimi",
+    totalQuestions: "Toplam Soru",
+    totalChapters: "Bölüm Sayısı",
+    startStudying: "Mütalaaya Başla",
+    continueStudying: "Kaldığın Yerden Devam Et",
+    quickStats: "Genel İlerleme",
+    completionLabel: "Khatim Oranı",
+    retentionLabel: "Kavrama Oranı",
+
+    // Category Badges
+    categoryFikih: "Fıkıh",
+    categoryBelagat: "Belâgat",
+    categoryNahiv: "Nahiv",
+    categoryUsul: "Fıkıh Usûlü",
+    categoryAkaid: "Akāid ve Kelâm",
+
+    // Study View & Action Dock
+    studyViewTitle: "Mütalaa Odası",
+    allChapters: "Tüm Kitap (Bütün Bölümler)",
+    selectChapter: "Bölüm Seçiniz",
+    filterStarred: "Yıldızlı Sorular",
+    filterAll: "Bütün Sorular",
+    questionNumberPrefix: "Soru",
+    chapterPrefix: "Bölüm",
+    showAnswer: "Cevabı Gör",
+    hideAnswer: "Cevabı Gizle",
+    prevQuestion: "Önceki",
+    nextQuestion: "Sonraki",
+    evalRemembered: "Hatırladım",
+    evalRepeat: "Tekrar Et",
+    evalConfirmedRemembered: "Hafızaya kaydedildi",
+    evalConfirmedRepeat: "Tekrar listesine eklendi",
+    addNote: "Faide Notu Ekle",
+    editNote: "Notu Düzenle",
+    saveNote: "Notu Kaydet",
+    noteSaved: "Not kaydedildi",
+    notePlaceholder: "Bu soru için ders notlarınızı ve hoca izahlarını buraya kaydedebilirsiniz...",
+    copyText: "Metni Kopyala",
+    textCopied: "Metin panoya kopyalandı",
+    starQuestion: "Yıldız Ekle",
+    unstarQuestion: "Yıldızı Kaldır",
+    soundEffectToggle: "Ses Efektleri",
+    soundOn: "Ses Açık",
+    soundOff: "Sessiz Mod",
+    noQuestionsInScope: "Bu seçilen kapsamda herhangi bir soru bulunamadı.",
+    shortcutHint: "Klavye: [Boşluk] Cevap, [Sol/Sağ Ok] Gezinme, [Yukarı Ok] Yıldız",
+    swipeHint: "Sorular arasında geçiş yapmak için sağa veya sola kaydırabilirsiniz.",
+
+    // Sidebar & Dashboard
+    dashboardTitle: "Öğrenme Takip Paneli",
+    statCompletion: "Tamamlanma Yüzdesi",
+    statMastery: "Hafıza Başarısı",
+    statRememberedCount: "Kavranan Soru Sayısı",
+    statRepeatCount: "Tekrar Edilecek Soru Sayısı",
+    statTotalSeen: "Mütalaa Edilen Sorular",
+    chapterProgressTitle: "Bölümlere Göre İlerleme",
+
+    // Modes
+    modesTitle: "Çalışma Modları",
+    studyMode: "Kart Mütalaa Modu",
+    examMode: "İmtihan Modu",
+    readerMode: "Düz Okuma Modu",
+    exitExam: "İmtihandan Çık",
+    exitReader: "Okumadan Çık",
+
+    // Exam Mode
+    examTitle: "İmtihan Salonu",
+    oralExamTab: "Sözlü İmtihan (30sn)",
+    clozeExamTab: "Boşluk Doldurma",
+    timerSeconds: "saniye",
+    checkAnswer: "Cevabı Kontrol Et",
+    revealWord: "Eksik Kelimeyi Göster",
+    nextExamQuestion: "Sonraki Soru",
+    examHintOral: "Süre bitene kadar cevabı zihninizden veya sesli olarak ifade ediniz.",
+    examHintCloze: "Noktalı kutucuktaki gizlenmiş anahtar kelimeyi tahmin ediniz.",
+
+    // Settings Modal
+    settingsTitle: "Uygulama Ayarları",
+    shuffleAlgorithm: "Soru Sıralama Mantığı",
+    algoOriginal: "Orijinal Rastgele (Döngüsel)",
+    algoSequential: "Sıralı Mod (Kitap Sırası)",
+    algoSpaced: "Akıllı Tekrar (Ağırlıklı)",
+    fontSizeLabel: "Metin Yazı Boyutu",
+    fontSmall: "Küçük Boyut",
+    fontMedium: "Orta (Standart)",
+    fontLarge: "Büyük Boyut",
+    resetData: "Tüm Çalışma Verilerini Sıfırla",
+    resetConfirm: "Bütün ezber, not ve ilerleme kayıtlarınız silinecektir. Onaylıyor musunuz?",
+    resetSuccess: "Tüm ilerleme verileri başarıyla sıfırlandı.",
+    close: "Kapat",
+
+    // Algorithm Explanations
+    algoExplanationTitle: "Algoritma Çalışma Mantığı",
+    algoOriginalTitle: "Orijinal Rastgele Algoritması",
+    algoOriginalDesc: "Tüm soruları karıştırarak sunar. Bir döngüde mevcut bütün sorular bitmeden hiçbir soru ikinci kez karşınıza çıkmaz.",
+    algoSequentialTitle: "Sıralı Tertip Modu",
+    algoSequentialDesc: "Kitabın kendi asıl konu ve soru numarasına göre 1'den son soruya kadar sırayla ilerler.",
+    algoSpacedTitle: "Akıllı Tekrar Algoritması",
+    algoSpacedDesc: "Tekrar Et olarak işaretlenen veya zorlanılan sorulara 3 kat daha fazla çıkma ihtimali tanır.",
+
+    // Search Modal
+    searchTitle: "Klasik Kitaplarda Evrensel Arama",
+    searchPlaceholder: "Arapça, Osmanlıca veya Endonezce bir kavram arayınız...",
+    searchResults: "Bulunan Sonuçlar",
+    noResultsFound: "Aradığınız terime uygun bir soru veya cevap bulunamadı.",
+    searchHint: "Kartı doğrudan açmak ve çalışmaya başlamak için sonuca tıklayınız.",
+
+    // Book Names & Descriptions
+    bookQuduri: "Muhtasarü'l-Kudûrî",
+    descQuduri: "Hanefî mezhebinin temel metinlerinden meşhur fıkıh muhtasarı.",
+    bookTalhis: "Telhîsu'l-Miftâh",
+    descTalhis: "Meânî, beyân ve bedî' ilimlerini cem eden belâgat şaheseri.",
+    bookKafiye: "el-Kâfiye",
+    descKafiye: "İbnü'l-Hâcib'in Arapça gramer ve nahiv kaidelerini toplayan eseri.",
+    bookMenar: "Menâru'l-Envâr",
+    descMenar: "İmam Nesefî'nin Hanefî fıkıh usûlüne dair muteber metni.",
+    bookAkaid: "Metn-i Akāid",
+    descAkaid: "Necmeddîn en-Nesefî'nin Ehl-i Sünnet akîdesini özetleyen temel metni."
+  },
+
+  id: {
+    // Brand & Header
+    brandTitle: "Portal Madrasah Klasik",
+    brandSubtitle: "Sistem Muthala'ah dan Ujian 5 Kitab Utama",
+    homeNav: "Beranda",
+    searchNav: "Pencarian Global",
+    settingsNav: "Pengaturan",
+    themeToggle: "Ganti Tema",
+    themeDark: "Mode Gelap",
+    themeLight: "Mode Terang",
+    langToggle: "Beralih ke Osmanlıca",
+    langTr: "Utsmaniyah / Turki",
+    langId: "Bahasa Indonesia",
+
+    // Home Screen
+    welcomeTitle: "Lima Kitab Klasik Utama",
+    welcomeSubtitle: "Selamat datang di portal hafalan, muthala'ah, dan ujian madrasah. Silakan pilih bidang ilmu dan kitab yang ingin dipelajari.",
+    selectBook: "Pilih Kitab",
+    totalQuestions: "Total Soal",
+    totalChapters: "Jumlah Bab",
+    startStudying: "Mulai Belajar",
+    continueStudying: "Lanjutkan Belajar",
+    quickStats: "Progres Belajar",
+    completionLabel: "Tingkat Khatam",
+    retentionLabel: "Tingkat Penguasaan",
+
+    // Category Badges
+    categoryFikih: "Fikih",
+    categoryBelagat: "Balaghah",
+    categoryNahiv: "Nahwu",
+    categoryUsul: "Ushul Fiqh",
+    categoryAkaid: "Akidah & Kalam",
+
+    // Study View & Action Dock
+    studyViewTitle: "Ruang Belajar",
+    allChapters: "Semua Bab (Satu Kitab Penuh)",
+    selectChapter: "Pilih Bab Tertentu",
+    filterStarred: "Soal Berbintang",
+    filterAll: "Semua Soal",
+    questionNumberPrefix: "Nomor",
+    chapterPrefix: "Bab",
+    showAnswer: "Lihat Jawaban",
+    hideAnswer: "Sembunyikan Jawaban",
+    prevQuestion: "Sebelumnya",
+    nextQuestion: "Selanjutnya",
+    evalRemembered: "Sudah Hafal",
+    evalRepeat: "Ulangi Lagi",
+    evalConfirmedRemembered: "Tercatat dalam hafalan",
+    evalConfirmedRepeat: "Dimasukkan ke antrean ulang",
+    addNote: "Tambah Catatan Faidah",
+    editNote: "Ubah Catatan",
+    saveNote: "Simpan Catatan",
+    noteSaved: "Catatan tersimpan",
+    notePlaceholder: "Tuliskan catatan penjelasan ustadz atau faidah pribadi untuk soal ini...",
+    copyText: "Salin Teks",
+    textCopied: "Teks berhasil disalin ke clipboard",
+    starQuestion: "Beri Bintang",
+    unstarQuestion: "Hapus Bintang",
+    soundEffectToggle: "Efek Suara",
+    soundOn: "Suara Aktif",
+    soundOff: "Mode Hening",
+    noQuestionsInScope: "Tidak ada butir soal dalam cakupan bab yang dipilih.",
+    shortcutHint: "Pintasan: [Spasi] Jawaban, [Panah Kiri/Kanan] Navigasi, [Panah Atas] Bintang",
+    swipeHint: "Usap layar ke kanan atau ke kiri untuk berpindah antar soal.",
+
+    // Sidebar & Dashboard
+    dashboardTitle: "Dasbor Evaluasi Belajar",
+    statCompletion: "Persentase Selesai",
+    statMastery: "Tingkat Hafalan",
+    statRememberedCount: "Jumlah Soal Dikuasai",
+    statRepeatCount: "Jumlah Soal Perlu Ulang",
+    statTotalSeen: "Total Soal Dilihat",
+    chapterProgressTitle: "Kemajuan Tiap Bab",
+
+    // Modes
+    modesTitle: "Pilihan Mode Belajar",
+    studyMode: "Mode Kartu Muthala'ah",
+    examMode: "Mode Ujian",
+    readerMode: "Mode Baca Berkelanjutan",
+    exitExam: "Keluar dari Ujian",
+    exitReader: "Keluar dari Mode Baca",
+
+    // Exam Mode
+    examTitle: "Ruang Simulasi Ujian",
+    oralExamTab: "Ujian Lisan (30 Detik)",
+    clozeExamTab: "Tebak Kata Kunci",
+    timerSeconds: "detik",
+    checkAnswer: "Periksa Jawaban",
+    revealWord: "Buka Kata yang Hilang",
+    nextExamQuestion: "Soal Selanjutnya",
+    examHintOral: "Ucapkan jawaban secara lisan atau dalam hati sebelum batas waktu berakhir.",
+    examHintCloze: "Tebak kata kunci istilah yang disembunyikan di dalam kotak titik-titik.",
+
+    // Settings Modal
+    settingsTitle: "Pengaturan Portal",
+    shuffleAlgorithm: "Logika Pengacakan Soal",
+    algoOriginal: "Acak Asli (Siklik)",
+    algoSequential: "Berurutan (Nomor Kitab)",
+    algoSpaced: "Pengulangan Pintar (Berbobot)",
+    fontSizeLabel: "Ukuran Teks Arab & Terjemah",
+    fontSmall: "Ukuran Kecil",
+    fontMedium: "Ukuran Sedang",
+    fontLarge: "Ukuran Besar",
+    resetData: "Hapus Seluruh Data Belajar",
+    resetConfirm: "Seluruh progres hafalan, catatan, dan bintang akan dihapus permanen. Lanjutkan?",
+    resetSuccess: "Seluruh data riwayat belajar berhasil direset.",
+    close: "Tutup",
+
+    // Algorithm Explanations
+    algoExplanationTitle: "Penjelasan Logika Algoritma",
+    algoOriginalTitle: "Algoritma Acak Asli (Original)",
+    algoOriginalDesc: "Mengocok soal secara acak. Seluruh soal dijamin keluar satu kali sebelum ada soal yang berulang.",
+    algoSequentialTitle: "Mode Urut Terstruktur",
+    algoSequentialDesc: "Menampilkan soal berurutan dari nomor 1 sampai akhir sesuai urutan bab naskah aslinya.",
+    algoSpacedTitle: "Algoritma Pengulangan Cerdas",
+    algoSpacedDesc: "Memberikan peluang kemunculan 3 kali lipat lebih tinggi untuk soal-soal yang ditandai 'Ulangi Lagi'.",
+
+    // Search Modal
+    searchTitle: "Pencarian Global Seluruh Kitab",
+    searchPlaceholder: "Ketik kata kunci dalam bahasa Arab, Osmanlıca, atau Indonesia...",
+    searchResults: "Hasil Penelusuran",
+    noResultsFound: "Tidak ditemukan soal atau jawaban yang sesuai dengan kata kunci tersebut.",
+    searchHint: "Klik pada hasil pencarian untuk langsung membuka kartu soal terkait.",
+
+    // Book Names & Descriptions
+    bookQuduri: "Mukhtashar al-Quduri",
+    descQuduri: "Ringkasan fikih madzhab Hanafi yang sangat populer dan otoritatif.",
+    bookTalhis: "Talkhis al-Miftah",
+    descTalhis: "Karya agung balaghah yang merangkum ilmu ma'ani, bayan, dan badi'.",
+    bookKafiye: "Al-Kafiyah",
+    descKafiye: "Karya Ibnu al-Hajib tentang kaidah tata bahasa nahwu bahasa Arab.",
+    bookMenar: "Manar al-Anwar",
+    descMenar: "Karya Imam an-Nasafi tentang pokok-pokok ushul fiqh madzhab Hanafi.",
+    bookAkaid: "Matn al-'Aqa'id",
+    descAkaid: "Matan akidah Ahlus Sunnah wal Jama'ah ringkas karya Najmuddin an-Nasafi."
+  }
+};
