@@ -321,6 +321,11 @@ select {
   .study-sidebar-col {
     width: 20rem;
     flex-shrink: 0;
+    position: sticky;
+    top: 5rem;
+    max-height: calc(100vh - 6.5rem);
+    overflow-y: auto;
+    order: -1;
   }
 
   .sidebar-backdrop {

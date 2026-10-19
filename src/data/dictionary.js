@@ -73,6 +73,7 @@ export const dictionary = {
     // Sidebar & Dashboard
     dashboardTitle: "Öğrenme Takip Paneli",
     evalHeading: "Mütalaa Değerlendirmesi",
+    retentionLabel: "Kavrama Oranı",
     closeSidebar: "Paneli Kapat",
     statCompletion: "Tamamlanma Yüzdesi",
     statMastery: "Hafıza Başarısı",
@@ -213,6 +214,7 @@ export const dictionary = {
     // Sidebar & Dashboard
     dashboardTitle: "Dasbor Evaluasi Belajar",
     evalHeading: "Evaluasi & Statistik Belajar",
+    retentionLabel: "Tingkat Penguasaan",
     closeSidebar: "Tutup Panel",
     statCompletion: "Persentase Selesai",
     statMastery: "Tingkat Hafalan",

@@ -654,6 +654,7 @@ export function renderStudyView(container, store) {
       currentIndex = 0;
       displayedIndices.length = 0;
       isAnswerRevealed = false;
+      updateChapterOptions();
       chapterSelect.value = activeChapter;
       markCurrentViewed();
       updateCard();
