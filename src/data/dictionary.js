@@ -89,6 +89,7 @@ export const dictionary = {
     readerMode: "Düz Okuma Modu",
     exitExam: "İmtihandan Çık",
     exitReader: "Okumadan Çık",
+    readerSearchPlaceholder: "Sorularda veya cevaplarda arayınız...",
 
     // Exam Mode
     examTitle: "İmtihan Salonu",
@@ -229,7 +230,8 @@ export const dictionary = {
     examMode: "Mode Ujian",
     readerMode: "Mode Baca Berkelanjutan",
     exitExam: "Keluar dari Ujian",
-    exitReader: "Keluar dari Mode Baca",
+    exitReader: "Keluar Baca",
+    readerSearchPlaceholder: "Cari dalam teks pertanyaan atau jawaban...",
 
     // Exam Mode
     examTitle: "Ruang Simulasi Ujian",
