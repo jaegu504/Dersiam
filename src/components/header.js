@@ -58,12 +58,12 @@ export function renderHeader(container, store) {
   container.innerHTML = `
     <nav id="header-bar" class="header-bar">
       <!-- Left Section: Brand & Context Navigation -->
-      <div class="flex items-center gap-3">
-        <div class="header-brand flex items-center gap-2">
+      <div class="header-left flex items-center gap-2 min-w-0">
+        <div class="header-brand flex items-center gap-2 shrink-0">
           <span class="brand-title font-bold text-lg cursor-pointer">${getLocalizedText(initialLang, 'brandTitle', 'Klasik Medrese Portal')}</span>
         </div>
 
-        <button id="btn-home" class="neu-button${initialVisibility.showHomeBtn ? '' : ' hidden'}" aria-label="${getLocalizedText(initialLang, 'homeBtn', 'Ana Sayfa')}">
+        <button id="btn-home" class="neu-button shrink-0${initialVisibility.showHomeBtn ? '' : ' hidden'}" aria-label="${getLocalizedText(initialLang, 'homeBtn', 'Ana Sayfa')}">
           ${getIconSvg('home', 18)}
           <span class="home-btn-label">${getLocalizedText(initialLang, 'homeBtn', 'Ana Sayfa')}</span>
         </button>
@@ -73,8 +73,8 @@ export function renderHeader(container, store) {
         </span>
       </div>
 
-      <!-- Right Section: Tools & Settings -->
-      <div class="flex items-center gap-2">
+      <!-- Right Section: Tools & Settings (Always pinned to top right) -->
+      <div class="header-tools flex items-center gap-1.5 shrink-0 ml-auto">
         <button id="btn-search-trigger" class="neu-button" aria-label="${getLocalizedText(initialLang, 'searchNav', 'Genel Arama')}" title="${getLocalizedText(initialLang, 'searchNav', 'Genel Arama')}">
           ${getIconSvg('search', 18)}
         </button>

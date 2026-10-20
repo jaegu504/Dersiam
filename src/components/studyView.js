@@ -118,9 +118,9 @@ export function renderStudyView(container, store) {
   container.innerHTML = `
     <div class="study-view flex flex-col gap-6 w-full animate-fade-in pb-28">
       <!-- Top Controls: Mode Switch, Chapter Filter, Star -->
-      <header class="study-toolbar neu-card flex flex-wrap items-center justify-between gap-4 p-4">
+      <header class="study-toolbar neu-card flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3 sm:p-4">
         <!-- Modes -->
-        <div class="flex items-center gap-2">
+        <div class="mode-group flex items-center gap-2">
           <button id="btn-mode-study" class="neu-button neu-button-primary active" aria-label="${initialDict.studyMode || 'Normal Mütalaa'}">
             ${getIconSvg('book', 16)}
             <span class="mode-study-label">${initialDict.studyMode || 'Normal Mütalaa'}</span>
@@ -136,11 +136,11 @@ export function renderStudyView(container, store) {
         </div>
 
         <!-- Chapter Select & Star -->
-        <div class="flex items-center gap-3">
+        <div class="chapter-star-group flex items-center gap-2">
           <select id="chapter-select" class="neu-input text-xs py-2 px-3 rounded-lg bg-surface border border-subtle" aria-label="${initialDict.selectChapter || 'Bölüm Seçiniz'}">
           </select>
 
-          <button id="btn-star" class="neu-button" aria-label="${initialDict.starQuestion}" title="${initialDict.starQuestion}">
+          <button id="btn-star" class="neu-button shrink-0" aria-label="${initialDict.starQuestion}" title="${initialDict.starQuestion}">
             <span class="star-icon">${getIconSvg('star', 20)}</span>
           </button>
         </div>
@@ -217,27 +217,27 @@ export function renderStudyView(container, store) {
                 </div>
               </div>
             </div>
+
+            <!-- Card Action Dock (Always visible directly below question/answer) -->
+            <nav class="floating-dock" aria-label="Flashcard Navigation">
+              <button id="btn-prev" class="neu-button neu-button-dock" aria-label="${initialDict.prevQuestion || 'Önceki'}">
+                ${getIconSvg('arrowLeft', 20)}
+                <span class="prev-label hidden sm:inline text-xs">${initialDict.prevQuestion || 'Önceki'}</span>
+              </button>
+
+              <button id="btn-toggle-answer" class="neu-button neu-button-primary neu-button-dock" aria-label="${initialDict.showAnswer || 'Cevabı Gör'}">
+                <span class="toggle-icon">${getIconSvg('eye', 20)}</span>
+                <span class="toggle-answer-label text-xs font-bold">${initialDict.showAnswer || 'Cevabı Gör'}</span>
+              </button>
+
+              <button id="btn-next" class="neu-button neu-button-dock" aria-label="${initialDict.nextQuestion || 'Sonraki'}">
+                <span class="next-label hidden sm:inline text-xs">${initialDict.nextQuestion || 'Sonraki'}</span>
+                ${getIconSvg('arrowRight', 20)}
+              </button>
+            </nav>
           </article>
         </div>
       </div>
-
-      <!-- Tactile Floating Action Dock -->
-      <nav class="floating-dock" aria-label="Flashcard Navigation">
-        <button id="btn-prev" class="neu-button neu-button-dock" aria-label="${initialDict.prevQuestion || 'Önceki'}">
-          ${getIconSvg('arrowLeft', 20)}
-          <span class="prev-label hidden sm:inline text-xs">${initialDict.prevQuestion || 'Önceki'}</span>
-        </button>
-
-        <button id="btn-toggle-answer" class="neu-button neu-button-primary neu-button-dock" aria-label="${initialDict.showAnswer || 'Cevabı Gör'}">
-          <span class="toggle-icon">${getIconSvg('eye', 20)}</span>
-          <span class="toggle-answer-label text-xs font-bold">${initialDict.showAnswer || 'Cevabı Gör'}</span>
-        </button>
-
-        <button id="btn-next" class="neu-button neu-button-dock" aria-label="${initialDict.nextQuestion || 'Sonraki'}">
-          <span class="next-label hidden sm:inline text-xs">${initialDict.nextQuestion || 'Sonraki'}</span>
-          ${getIconSvg('arrowRight', 20)}
-        </button>
-      </nav>
     </div>
   `;
 
