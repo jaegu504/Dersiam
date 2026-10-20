@@ -246,6 +246,42 @@ describe('initApp Application Entrypoint', () => {
 
     instance.viewUnmount();
   });
+
+  it('navigates back to home view on popstate event without leaving website', async () => {
+    const { initApp } = await import('../src/main.js');
+    document.body.innerHTML = '<div id="app"></div>';
+    const root = document.getElementById('app');
+    const customStore = createStore({
+      ...DEFAULT_STATE,
+      currentView: 'home',
+      activeLang: 'tr'
+    });
+
+    const pushStateSpy = vi.spyOn(window.history, 'pushState');
+
+    const instance = initApp(root, customStore);
+
+    // Simulate clicking a book card to go to study
+    customStore.setState({ currentView: 'study', activeBook: 'quduri' });
+    expect(customStore.getState().currentView).toBe('study');
+    expect(pushStateSpy).toHaveBeenCalledWith(
+      { view: 'study', book: 'quduri' },
+      '',
+      window.location.pathname
+    );
+
+    // Simulate mobile edge-swipe or browser back button
+    window.dispatchEvent(new PopStateEvent('popstate', {
+      state: { view: 'home', book: null }
+    }));
+
+    expect(customStore.getState().currentView).toBe('home');
+    expect(customStore.getState().activeBook).toBe(null);
+    expect(root.querySelector('.home-view')).toBeTruthy();
+
+    pushStateSpy.mockRestore();
+    instance.viewUnmount();
+  });
 });
 
 

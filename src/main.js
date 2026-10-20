@@ -31,6 +31,19 @@ export function initApp(appRoot = document.getElementById('app'), appStore = sto
   const headerUnmount = renderHeader(headerMount, appStore);
 
   let currentViewUnmount = null;
+  let isPopstateNavigation = false;
+
+  // Initialize browser history entry if needed
+  if (typeof window !== 'undefined' && window.history) {
+    const initialState = appStore.getState();
+    if (!window.history.state || !window.history.state.view) {
+      window.history.replaceState(
+        { view: initialState.currentView, book: initialState.activeBook },
+        '',
+        window.location.pathname
+      );
+    }
+  }
 
   function mountView(currentView) {
     if (typeof currentViewUnmount === 'function') {
@@ -80,7 +93,44 @@ export function initApp(appRoot = document.getElementById('app'), appStore = sto
     if (state.currentView !== prevState?.currentView) {
       mountView(state.currentView);
     }
+
+    // Synchronize browser history for native back buttons and mobile edge-swipe
+    if (!isPopstateNavigation && typeof window !== 'undefined' && window.history) {
+      const hState = window.history.state;
+      const viewChanged = state.currentView !== prevState?.currentView;
+      const bookChanged = state.activeBook !== prevState?.activeBook && state.currentView !== 'home';
+      if (viewChanged || bookChanged) {
+        const stateChanged = !hState || hState.view !== state.currentView || hState.book !== state.activeBook;
+        if (stateChanged) {
+          window.history.pushState(
+            { view: state.currentView, book: state.activeBook },
+            '',
+            window.location.pathname
+          );
+        }
+      }
+    }
   });
+
+  function handlePopState(event) {
+    isPopstateNavigation = true;
+    try {
+      const hState = event.state;
+      if (hState && hState.view) {
+        appStore.setState({
+          currentView: hState.view,
+          activeBook: hState.book || null
+        });
+      } else {
+        appStore.setState({
+          currentView: 'home',
+          activeBook: null
+        });
+      }
+    } finally {
+      isPopstateNavigation = false;
+    }
+  }
 
   // Modal trigger handlers
   function handleOpenSearch() {
@@ -108,6 +158,7 @@ export function initApp(appRoot = document.getElementById('app'), appStore = sto
     window.addEventListener('open-search', handleOpenSearch);
     window.addEventListener('open-settings', handleOpenSettings);
     window.addEventListener('keydown', handleGlobalKeyDown);
+    window.addEventListener('popstate', handlePopState);
   }
 
   return {
@@ -119,6 +170,7 @@ export function initApp(appRoot = document.getElementById('app'), appStore = sto
         window.removeEventListener('open-search', handleOpenSearch);
         window.removeEventListener('open-settings', handleOpenSettings);
         window.removeEventListener('keydown', handleGlobalKeyDown);
+        window.removeEventListener('popstate', handlePopState);
       }
     }
   };
