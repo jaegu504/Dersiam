@@ -10,7 +10,6 @@ import { getNextQuestion, getNextSequentialQuestion } from '../state/algorithms.
 import { loadUserProgress, saveUserProgress, recordSelfEvaluation, toggleStarred, saveNote } from '../state/storage.js';
 import { playPureSfx } from '../services/audio.js';
 import { getIconSvg } from './icons.js';
-import { renderSidebar } from './sidebarView.js';
 
 /**
  * Returns visibility state for the study flashcard answer and evaluation controls.
@@ -136,13 +135,8 @@ export function renderStudyView(container, store) {
           </button>
         </div>
 
-        <!-- Chapter Select, Star & Sidebar Evaluation Toggle -->
+        <!-- Chapter Select & Star -->
         <div class="flex items-center gap-3">
-          <button id="btn-toggle-eval" class="neu-button" aria-label="${initialDict.evalHeading || initialDict.dashboardTitle || 'Değerlendirme'}" title="${initialDict.evalHeading || initialDict.dashboardTitle || 'Değerlendirme'}">
-            ${getIconSvg('chart', 18)}
-            <span class="toggle-eval-label text-xs hidden sm:inline">${initialDict.evalHeading || initialDict.dashboardTitle || 'Değerlendirme'}</span>
-          </button>
-
           <select id="chapter-select" class="neu-input text-xs py-2 px-3 rounded-lg bg-surface border border-subtle" aria-label="${initialDict.selectChapter || 'Bölüm Seçiniz'}">
           </select>
 
@@ -152,9 +146,9 @@ export function renderStudyView(container, store) {
         </div>
       </header>
 
-      <!-- Main Content Area: Study Card + Evaluation Sidebar Mount -->
-      <div class="study-layout flex flex-col lg:flex-row gap-6 items-start w-full">
-        <div class="study-main-col flex flex-col gap-6 flex-1 min-w-0 w-full">
+      <!-- Main Content Area: Centered Study Card -->
+      <div class="study-layout flex flex-col items-center w-full max-w-3xl mx-auto">
+        <div class="study-main-col flex flex-col gap-6 w-full">
           <!-- Main Flashcard Card -->
           <article class="study-card neu-card flex flex-col gap-6 p-6 md:p-8" id="study-card">
             <!-- Card Header Info -->
@@ -225,9 +219,6 @@ export function renderStudyView(container, store) {
             </div>
           </article>
         </div>
-
-        <!-- Evaluation Sidebar Mount -->
-        <aside id="sidebar-mount" class="study-sidebar-col w-full lg:w-80 lg:shrink-0"></aside>
       </div>
 
       <!-- Tactile Floating Action Dock -->
@@ -251,8 +242,6 @@ export function renderStudyView(container, store) {
   `;
 
   // Element handles
-  const btnToggleEval = container.querySelector('#btn-toggle-eval');
-  const toggleEvalLabel = container.querySelector('.toggle-eval-label');
   const chapterSelect = container.querySelector('#chapter-select');
   const starBtn = container.querySelector('#btn-star');
   const starIconEl = starBtn.querySelector('.star-icon');
@@ -285,10 +274,6 @@ export function renderStudyView(container, store) {
   const modeStudyLabel = container.querySelector('.mode-study-label');
   const modeExamLabel = container.querySelector('.mode-exam-label');
   const modeReaderLabel = container.querySelector('.mode-reader-label');
-
-  // Mount Evaluation Dashboard Sidebar
-  const sidebarMountEl = container.querySelector('#sidebar-mount');
-  const unmountSidebar = sidebarMountEl ? renderSidebar(sidebarMountEl, store) : () => {};
 
   // Repopulate chapter select options
   function updateChapterOptions() {
@@ -398,15 +383,6 @@ export function renderStudyView(container, store) {
     modeStudyLabel.textContent = dict.studyMode || 'Normal Mütalaa';
     modeExamLabel.textContent = dict.examMode || 'İmtihan Modu';
     modeReaderLabel.textContent = dict.readerMode || 'Düz Okuma';
-
-    if (btnToggleEval) {
-      const evalTitle = dict.evalHeading || dict.dashboardTitle || 'Değerlendirme';
-      btnToggleEval.setAttribute('aria-label', evalTitle);
-      btnToggleEval.setAttribute('title', evalTitle);
-      if (toggleEvalLabel) {
-        toggleEvalLabel.textContent = evalTitle;
-      }
-    }
   }
 
   // Navigation functions
@@ -674,9 +650,6 @@ export function renderStudyView(container, store) {
   updateCard();
 
   return () => {
-    if (typeof unmountSidebar === 'function') {
-      unmountSidebar();
-    }
     if (typeof window !== 'undefined') {
       window.removeEventListener('keydown', handleKeyDown);
     }

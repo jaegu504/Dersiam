@@ -4,7 +4,6 @@ import { booksMetadata, booksData } from '../src/data/books.js';
 import { renderHomeView } from '../src/components/homeView.js';
 import { renderHeader } from '../src/components/header.js';
 import { renderStudyView } from '../src/components/studyView.js';
-import { renderSidebar } from '../src/components/sidebarView.js';
 import { renderExamView } from '../src/components/examView.js';
 import { renderReaderView } from '../src/components/readerView.js';
 import { openSettingsModal, openAlgorithmInfoModal, getAlgorithmExplanation } from '../src/components/settingsModal.js';
@@ -299,34 +298,6 @@ describe('Task 13: 100% Comprehensive Bilingual UI Audit & E2E Verification', ()
       expect(noteToggleLabel).toBe('Tambah Catatan Faidah');
     });
 
-    it('renders sidebarView with evaluation metrics (Tingkat Khatam, Tingkat Penguasaan, Dihafal, Perlu Diulang) and chapter breakdown', () => {
-      store.setState({
-        currentView: 'study',
-        activeBook: 'quduri',
-        activeLang: 'id',
-        activeChapter: 'all'
-      });
-
-      unmount = renderSidebar(container, store);
-
-      const heading = container.querySelector('#eval-heading').textContent.trim();
-      expect(heading).toBe('Evaluasi & Statistik Belajar');
-
-      const sidebarText = container.textContent;
-      expect(sidebarText).toContain('Tingkat Khatam');
-      expect(sidebarText).toContain('Tingkat Penguasaan');
-      expect(sidebarText).toContain('Dihafal');
-      expect(sidebarText).toContain('Perlu Diulang');
-      expect(sidebarText).toContain('Soal Berbintang');
-      expect(sidebarText).toContain('Kemajuan Tiap Bab');
-
-      // Chapter breakdown list in Indonesian
-      const chapterItems = container.querySelectorAll('[data-chapter-id]');
-      expect(chapterItems.length).toBeGreaterThan(0);
-      const firstChapterName = chapterItems[0].querySelector('.chapter-name').textContent.trim();
-      expect(firstChapterName).toBe('Mukaddimah');
-    });
-
     it('renders examView with oral 30s countdown, check answer, cloze masking, and exit button in Indonesian', () => {
       store.setState({
         currentView: 'exam',
@@ -506,16 +477,6 @@ describe('Task 13: 100% Comprehensive Bilingual UI Audit & E2E Verification', ()
         isAnswerRevealed: true
       });
       unmount = renderStudyView(container, store);
-      expect(EMOJI_REGEX.test(container.innerHTML)).toBe(false);
-    });
-
-    it('guarantees zero unicode emojis in sidebarView rendered DOM', () => {
-      store.setState({
-        currentView: 'study',
-        activeBook: 'quduri',
-        activeLang: 'id'
-      });
-      unmount = renderSidebar(container, store);
       expect(EMOJI_REGEX.test(container.innerHTML)).toBe(false);
     });
 

@@ -96,6 +96,9 @@ export function renderHeader(container, store) {
 
   // Element references
   const brandTitleEl = container.querySelector('.brand-title');
+  if (brandTitleEl && initialVisibility.showHomeBtn) {
+    brandTitleEl.classList.add('hidden-sm');
+  }
   const homeBtn = container.querySelector('#btn-home');
   const homeLabel = container.querySelector('.home-btn-label');
   const bookTitleBadge = container.querySelector('#active-book-title');
@@ -157,6 +160,7 @@ export function renderHeader(container, store) {
     // Update Brand Title
     if (brandTitleEl) {
       brandTitleEl.textContent = getLocalizedText(lang, 'brandTitle', 'Klasik Medrese Portal');
+      brandTitleEl.classList.toggle('hidden-sm', visibility.showHomeBtn);
     }
 
     // Update Home Button
