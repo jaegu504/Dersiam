@@ -26,7 +26,7 @@ export const booksMetadata = {
     categoryId: "Fikih",
     descTr: "Hanefî mezhebinin temel metinlerinden meşhur fıkıh muhtasarı.",
     descId: "Ringkasan fikih madzhab Hanafi yang sangat populer dan otoritatif.",
-    totalChapters: 8,
+    totalChapters: 9,
     totalQuestions: quduriData.length,
     authorTr: "Ebû'l-Hasan el-Kudûrî",
     authorId: "Abul Hasan al-Quduri",

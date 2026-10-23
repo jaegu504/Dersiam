@@ -7,13 +7,13 @@
 
 **Dersiam** adalah platform web interaktif muthala'ah (mütalaa) dan pengujian hafalan modern berbasis flashcard yang didesain khusus bagi para santri, thalabul ilmi, dan pelajar madrasah klasik Islam (*Osmanlı medrese geleneği*). 
 
-Aplikasi ini menyajikan 629 butir tanya-jawab otentik dari 5 kitab mu'tabar dalam satu portal yang cepat, elegan, dan ramah seluler (*mobile-first*).
+Aplikasi ini menyajikan 728 butir tanya-jawab otentik dari 5 kitab mu'tabar dalam satu portal yang cepat, elegan, dan ramah seluler (*mobile-first*).
 
 ---
 
 ## 5 Kitab Rujukan Utama
 
-1. **Mukhtasar al-Quduri (مختصر القدوري)** — *Fikih Mazhab Hanafi* (169 Soal-Jawab, 8 Bab Lengkap: Thaharah, Shalat, Zakat, Puasa, Haji, Nikah, Uqubat, Mukaddimah).
+1. **Mukhtasar al-Quduri (مختصر القدوري)** — *Fikih Mazhab Hanafi* (268 Soal-Jawab, 9 Bab Lengkap: Mukaddimah, Thaharah, Shalat, Zakat, Puasa, Haji, Muamalat, Nikah, Uqubat).
 2. **Talkhis al-Miftah (تلخيص المفتاح)** — *Balaghah: Ma'ani, Bayan, Badi'* (182 Soal-Jawab, 7 Bab Lengkap).
 3. **Al-Kafiyah fi an-Nahwi (الكافية في النحو)** — *Ilmu Nahwu* (140 Soal-Jawab, 5 Bab Lengkap: Isim Mu'rab, Mabni, Fi'il, Huruf, Mukaddimah).
 4. **Manar al-Anwar (منار الأنوار)** — *Ushul Fiqh* (77 Soal-Jawab, 5 Bab Lengkap: Khas/Aam, Amar/Nahi, Hakikat/Majaz, Sunnah, Qiyas).
