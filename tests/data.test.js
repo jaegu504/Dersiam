@@ -13,8 +13,8 @@ describe('Data Schema and Bilingual Dictionary', () => {
     });
   });
 
-  it('contains valid data items for all 5 books with required bilingual fields', () => {
-    const bookKeys = ['quduri', 'talhis', 'kafiye', 'menar', 'akaid'];
+  it('contains valid data items for all 6 books with required bilingual fields', () => {
+    const bookKeys = ['quduri', 'talhis', 'kafiye', 'menar', 'akaid', 'maksud'];
     expect(Object.keys(booksData).sort()).toEqual(bookKeys.sort());
 
     bookKeys.forEach(k => {
@@ -33,8 +33,8 @@ describe('Data Schema and Bilingual Dictionary', () => {
     });
   });
 
-  it('contains valid booksMetadata for all 5 books', () => {
-    const bookKeys = ['quduri', 'talhis', 'kafiye', 'menar', 'akaid'];
+  it('contains valid booksMetadata for all 6 books', () => {
+    const bookKeys = ['quduri', 'talhis', 'kafiye', 'menar', 'akaid', 'maksud'];
     bookKeys.forEach(k => {
       const meta = booksMetadata[k];
       expect(meta).toBeDefined();

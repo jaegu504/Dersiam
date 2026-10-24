@@ -37,6 +37,7 @@ export const dictionary = {
     categoryNahiv: "Nahiv",
     categoryUsul: "Fıkıh Usûlü",
     categoryAkaid: "Akāid ve Kelâm",
+    categorySarf: "Sarf",
 
     // Study View & Action Dock
     studyViewTitle: "Mütalaa Odası",
@@ -143,7 +144,9 @@ export const dictionary = {
     bookMenar: "Menâru'l-Envâr",
     descMenar: "İmam Nesefî'nin Hanefî fıkıh usûlüne dair muteber metni.",
     bookAkaid: "Metn-i Akāid",
-    descAkaid: "Necmeddîn en-Nesefî'nin Ehl-i Sünnet akîdesini özetleyen temel metni."
+    descAkaid: "Necmeddîn en-Nesefî'nin Ehl-i Sünnet akîdesini özetleyen temel metni.",
+    bookMaksud: "Kitâbü'l-Maksûd",
+    descMaksud: "Arapça sarf ve morfoloji ilmini, fiil bablarını ve i'lâl kaidelerini öğreten temel metin."
   },
 
   id: {
@@ -179,6 +182,7 @@ export const dictionary = {
     categoryNahiv: "Nahwu",
     categoryUsul: "Ushul Fiqh",
     categoryAkaid: "Akidah & Kalam",
+    categorySarf: "Sharaf",
 
     // Study View & Action Dock
     studyViewTitle: "Ruang Belajar",
@@ -285,6 +289,8 @@ export const dictionary = {
     bookMenar: "Manar al-Anwar",
     descMenar: "Karya Imam an-Nasafi tentang pokok-pokok ushul fiqh madzhab Hanafi.",
     bookAkaid: "Matn al-'Aqa'id",
-    descAkaid: "Matan akidah Ahlus Sunnah wal Jama'ah ringkas karya Najmuddin an-Nasafi."
+    descAkaid: "Matan akidah Ahlus Sunnah wal Jama'ah ringkas karya Najmuddin an-Nasafi.",
+    bookMaksud: "Kitab Al-Maqshud",
+    descMaksud: "Kitab induk ilmu sharaf dan morfologi bahasa Arab, bab bina', serta kaidah i'lal yang otoritatif."
   }
 };

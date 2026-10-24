@@ -10,7 +10,7 @@ import { dictionary } from '../data/dictionary.js';
 import { playPureSfx } from '../services/audio.js';
 import { getIconSvg } from './icons.js';
 
-const BOOK_KEYS = ['quduri', 'talhis', 'kafiye', 'menar', 'akaid'];
+const BOOK_KEYS = ['quduri', 'talhis', 'kafiye', 'menar', 'akaid', 'maksud'];
 
 /**
  * Renders the home landing page with hero header and 5 classical kitab cards.

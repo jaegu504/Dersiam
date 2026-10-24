@@ -158,13 +158,13 @@ describe('HomeView Landing Page Component', () => {
     });
   });
 
-  it('renders hero section and all 5 kitab cards with zero emojis', () => {
+  it('renders hero section and all 6 kitab cards with zero emojis', () => {
     renderHomeView(container, store);
 
     const cards = container.querySelectorAll('.book-card');
-    expect(cards.length).toBe(5);
+    expect(cards.length).toBe(6);
 
-    const bookKeys = ['quduri', 'talhis', 'kafiye', 'menar', 'akaid'];
+    const bookKeys = ['quduri', 'talhis', 'kafiye', 'menar', 'akaid', 'maksud'];
     bookKeys.forEach(key => {
       const card = container.querySelector(`[data-book-id="${key}"]`);
       expect(card).toBeTruthy();
@@ -238,7 +238,7 @@ describe('initApp Application Entrypoint', () => {
     expect(root.querySelector('#view-mount')).toBeTruthy();
     expect(root.querySelector('#header-bar')).toBeTruthy();
     expect(root.querySelector('.home-view')).toBeTruthy();
-    expect(root.querySelectorAll('.book-card').length).toBe(5);
+    expect(root.querySelectorAll('.book-card').length).toBe(6);
 
     // Navigate to study
     customStore.setState({ currentView: 'study', activeBook: 'quduri' });

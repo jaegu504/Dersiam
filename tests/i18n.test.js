@@ -29,6 +29,7 @@ describe('Task 13: 100% Comprehensive Bilingual UI Audit & E2E Verification', ()
     resetUserProgress('kafiye');
     resetUserProgress('menar');
     resetUserProgress('akaid');
+    resetUserProgress('maksud');
 
     store = createStore({
       ...DEFAULT_STATE,
@@ -117,8 +118,8 @@ describe('Task 13: 100% Comprehensive Bilingual UI Audit & E2E Verification', ()
       });
     });
 
-    it('guarantees all 5 classical books metadata have complete bilingual attributes', () => {
-      const bookKeys = ['quduri', 'talhis', 'kafiye', 'menar', 'akaid'];
+    it('guarantees all 6 classical books metadata have complete bilingual attributes', () => {
+      const bookKeys = ['quduri', 'talhis', 'kafiye', 'menar', 'akaid', 'maksud'];
       bookKeys.forEach((key) => {
         const meta = booksMetadata[key];
         expect(meta).toBeTruthy();
@@ -143,8 +144,8 @@ describe('Task 13: 100% Comprehensive Bilingual UI Audit & E2E Verification', ()
       });
     });
 
-    it('guarantees all questions in all 5 books have complete bilingual fields', () => {
-      const bookKeys = ['quduri', 'talhis', 'kafiye', 'menar', 'akaid'];
+    it('guarantees all questions in all 6 books have complete bilingual fields', () => {
+      const bookKeys = ['quduri', 'talhis', 'kafiye', 'menar', 'akaid', 'maksud'];
       bookKeys.forEach((key) => {
         const questions = booksData[key];
         expect(questions.length).toBeGreaterThan(0);
@@ -181,16 +182,17 @@ describe('Task 13: 100% Comprehensive Bilingual UI Audit & E2E Verification', ()
       );
       expect(heroBadge.textContent.trim()).toBe("Sistem Muthala'ah dan Ujian 5 Kitab Utama");
 
-      // Grid with 5 books
+      // Grid with 6 books
       const cards = container.querySelectorAll('.book-card');
-      expect(cards.length).toBe(5);
+      expect(cards.length).toBe(6);
 
       const expectedBooks = [
         { key: 'quduri', title: 'Mukhtashar al-Quduri', cat: 'Fikih', author: 'Abul Hasan al-Quduri' },
         { key: 'talhis', title: 'Talkhis al-Miftah', cat: 'Balaghah', author: 'Khatib al-Qazwini' },
         { key: 'kafiye', title: 'Al-Kafiyah', cat: 'Nahwu', author: 'Ibnu al-Hajib' },
         { key: 'menar', title: 'Manar al-Anwar', cat: 'Ushul Fiqh', author: 'Hafizhud Din an-Nasafi' },
-        { key: 'akaid', title: "Matn al-'Aqa'id", cat: 'Akidah & Kalam', author: 'Najmuddin Umar an-Nasafi' }
+        { key: 'akaid', title: "Matn al-'Aqa'id", cat: 'Akidah & Kalam', author: 'Najmuddin Umar an-Nasafi' },
+        { key: 'maksud', title: 'Kitab Al-Maqshud', cat: 'Sharaf', author: "Al-Imam Al-A'zham Abu Hanifah" }
       ];
 
       expectedBooks.forEach(({ key, title, cat, author }) => {

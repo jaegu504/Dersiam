@@ -507,3 +507,289 @@ select {
     line-height: 2;
   }
 }
+
+/* ==========================================================================
+   Visual Pedagogical Diagrams (Tree Charts, I'lal Pipelines, Tashrif Grids)
+   ========================================================================== */
+
+.ans-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.ans-p {
+  line-height: 1.85;
+}
+
+.ans-subtitle {
+  font-weight: 700;
+  color: var(--accent-primary);
+  margin-top: 0.25rem;
+  border-bottom: 1px dashed var(--border-subtle);
+  padding-bottom: 0.2rem;
+}
+
+/* 1. Tree Diagram (Pohon Bercabang) */
+.v-tree {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0.75rem 0;
+  padding: 1rem 0.75rem;
+  background-color: var(--bg-surface);
+  border-radius: 14px;
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--neu-inset-sm);
+  width: 100%;
+  overflow-x: auto;
+}
+
+.v-tree-root {
+  background-color: var(--accent-primary);
+  color: var(--accent-text);
+  font-weight: 700;
+  padding: 0.45rem 1.25rem;
+  border-radius: 10px;
+  box-shadow: var(--neu-raised-sm);
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.v-tree-stem {
+  width: 2px;
+  height: 18px;
+  background-color: var(--accent-primary);
+  opacity: 0.55;
+}
+
+.v-tree-branches {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding-top: 0.65rem;
+  border-top: 2px solid rgba(142, 80, 40, 0.35);
+  position: relative;
+}
+
+[data-theme="dark"] .v-tree-branches {
+  border-top-color: rgba(212, 139, 71, 0.4);
+}
+
+.v-tree-branch {
+  flex: 1 1 135px;
+  max-width: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 0.65rem 0.75rem;
+  box-shadow: var(--neu-raised-sm);
+  text-align: center;
+  gap: 0.3rem;
+  position: relative;
+}
+
+.v-tree-branch::before {
+  content: "";
+  position: absolute;
+  top: -0.65rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 0.65rem;
+  background-color: var(--accent-primary);
+  opacity: 0.45;
+}
+
+.v-node-title {
+  font-weight: 700;
+  color: var(--accent-primary);
+  font-size: 0.95em;
+}
+
+.v-node-desc {
+  font-size: 0.85em;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.v-node-ex {
+  margin-top: 0.2rem;
+  padding: 0.2rem 0.55rem;
+  background-color: var(--accent-surface);
+  color: var(--accent-primary);
+  border-radius: 6px;
+  font-weight: 700;
+  font-family: var(--font-arabic);
+  font-size: 1.05em;
+  direction: rtl;
+}
+
+.v-sub-leaves {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+  width: 100%;
+  padding-top: 0.35rem;
+  border-top: 1px dashed var(--border-subtle);
+}
+
+.v-leaf {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.82em;
+  font-weight: 600;
+}
+
+/* 2. Step-by-Step I'lal & Idgham Flow (Alur Transformasi Kata) */
+.v-flow-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin: 0.65rem 0;
+  padding: 0.85rem 1rem;
+  background-color: var(--bg-surface);
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--neu-inset-sm);
+}
+
+.v-flow-header {
+  font-size: 0.82em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+}
+
+.v-flow-chain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0;
+}
+
+.v-step-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 0.45rem 0.8rem;
+  box-shadow: var(--neu-raised-sm);
+  min-width: 78px;
+  text-align: center;
+}
+
+.v-step-card.is-origin {
+  border-color: var(--info-color);
+  background-color: var(--info-surface);
+}
+
+.v-step-card.is-final {
+  border-color: var(--success-color);
+  background-color: var(--success-surface);
+}
+
+.v-step-word {
+  font-family: var(--font-arabic);
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.5;
+  direction: rtl;
+  color: var(--text-primary);
+}
+
+.v-step-card.is-origin .v-step-word {
+  color: var(--info-color);
+}
+
+.v-step-card.is-final .v-step-word {
+  color: var(--success-color);
+}
+
+.v-step-tag {
+  font-family: var(--font-latin);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-top: 0.1rem;
+}
+
+.v-step-arrow {
+  font-weight: 700;
+  color: var(--accent-primary);
+  font-size: 1.1rem;
+  padding: 0 0.15rem;
+  user-select: none;
+}
+
+/* 3. Structured Tashrif & Wazan Grid */
+.v-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.55rem;
+  margin: 0.65rem 0;
+}
+
+.v-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.65rem;
+  margin: 0.65rem 0;
+}
+
+.v-grid-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 0.55rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  box-shadow: var(--neu-inset-sm);
+}
+
+.v-grid-label {
+  font-size: 0.75em;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.v-grid-val {
+  font-family: var(--font-arabic);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+  direction: rtl;
+  line-height: 1.6;
+}
+
+.v-badge-note {
+  margin-top: 0.35rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: 10px;
+  background-color: var(--accent-surface);
+  border-left: 3px solid var(--accent-primary);
+  font-size: 0.9em;
+  line-height: 1.65;
+}
+
+.text-rtl .v-badge-note {
+  border-left: none;
+  border-right: 3px solid var(--accent-primary);
+}
+

@@ -1,11 +1,12 @@
 /**
  * Books Registry and Consolidated Datasets
- * 5 Classical Madrasah Textbooks:
+ * 5 Classical Madrasah Textbooks (+ Kitab Al-Maqshud):
  * 1. quduri - Mukhtasar al-Quduri (Fikih)
  * 2. talhis - Talkhis al-Miftah (Balaghah)
  * 3. kafiye - Al-Kafiyah (Nahwu)
  * 4. menar  - Manar al-Anwar (Ushul Fiqh)
  * 5. akaid  - Matn al-'Aqa'id (Akidah & Kalam)
+ * 6. maksud - Kitab al-Maqsud (Sarf & I'lal)
  *
  * Zero emojis - 100% Bilingual
  */
@@ -15,6 +16,7 @@ import { talhisData } from './talhis.js';
 import { kafiyeData } from './kafiye.js';
 import { menarData } from './menar.js';
 import { akaidData } from './akaid.js';
+import { maksudData } from './maksud.js';
 
 export const booksMetadata = {
   quduri: {
@@ -91,6 +93,21 @@ export const booksMetadata = {
     authorTr: "Necmeddîn Ömer en-Nesefî",
     authorId: "Najmuddin Umar an-Nasafi",
     themeColor: "#7C3AED"
+  },
+  maksud: {
+    id: "maksud",
+    titleTr: "Kitâbü'l-Maksûd",
+    titleId: "Kitab Al-Maqshud",
+    titleAr: "كتاب المقصود",
+    categoryTr: "Sarf",
+    categoryId: "Sharaf",
+    descTr: "Arapça sarf ve morfoloji ilmini, fiil bablarını ve i'lâl kaidelerini öğreten temel metin.",
+    descId: "Kitab induk ilmu sharaf dan morfologi bahasa Arab, bab bina', serta kaidah i'lal yang otoritatif.",
+    totalChapters: 4,
+    totalQuestions: maksudData.length,
+    authorTr: "İmâm-ı Âzam Ebû Hanîfe",
+    authorId: "Al-Imam Al-A'zham Abu Hanifah",
+    themeColor: "#0D9488"
   }
 };
 
@@ -99,5 +116,6 @@ export const booksData = {
   talhis: talhisData,
   kafiye: kafiyeData,
   menar: menarData,
-  akaid: akaidData
+  akaid: akaidData,
+  maksud: maksudData
 };
