@@ -183,11 +183,11 @@ describe('HomeView Landing Page Component', () => {
     renderHomeView(container, store);
 
     const heroTitle = container.querySelector('.hero-title');
-    expect(heroTitle.textContent).toContain('Beş Temel Klasik Kitap');
+    expect(heroTitle.textContent).toContain('Altı Temel Klasik Kitap');
 
     store.setState({ activeLang: 'id' });
 
-    expect(heroTitle.textContent).toContain('Lima Kitab Klasik Utama');
+    expect(heroTitle.textContent).toContain('Enam Kitab Klasik Utama');
     const quduriCard = container.querySelector('[data-book-id="quduri"]');
     expect(quduriCard.querySelector('.book-title').textContent).toContain('Mukhtashar al-Quduri');
     expect(quduriCard.querySelector('.category-badge').textContent).toContain('Fikih');

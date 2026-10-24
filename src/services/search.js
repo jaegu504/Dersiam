@@ -309,7 +309,7 @@ function evaluateItem(item, query) {
 }
 
 /**
- * Universal bilingual search across all 5 books simultaneously.
+ * Universal bilingual search across all 6 books simultaneously.
  *
  * @param {string} query - search query in Turkish, Ottoman, Arabic, or Indonesian
  * @param {number} [maxResults=50] - maximum number of results to return

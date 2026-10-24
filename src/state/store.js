@@ -1,5 +1,5 @@
 /**
- * Central Reactive State Store for 5-Kitab Madrasah Q&A Portal.
+ * Central Reactive State Store for 6-Kitab Madrasah Q&A Portal.
  * Lightweight pub/sub observer pattern managing navigation, book selections,
  * exam states, and UI preferences.
  */

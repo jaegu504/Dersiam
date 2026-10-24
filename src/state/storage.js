@@ -1,5 +1,5 @@
 /**
- * Storage and metric calculation services for 5-Kitab Madrasah Q&A Portal.
+ * Storage and metric calculation services for 6-Kitab Madrasah Q&A Portal.
  * Handles localStorage persistence for user progress, settings, notes, and study metrics.
  */
 

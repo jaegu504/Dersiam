@@ -67,7 +67,7 @@ describe('Universal Bilingual Search Engine', () => {
       expect(vowelled[0].item.id).toBe(unvowelled[0].item.id);
     });
 
-    it('matches across all 5 books simultaneously and returns snippets', () => {
+    it('matches across all 6 books simultaneously and returns snippets', () => {
       const results = searchAllBooks('Mukaddime');
       expect(results.length).toBeGreaterThan(1);
       const bookKeys = new Set(results.map(r => r.item.bookKey));

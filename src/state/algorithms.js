@@ -1,5 +1,5 @@
 /**
- * Shuffle and Navigation Algorithms for 5-Kitab Madrasah Q&A Portal.
+ * Shuffle and Navigation Algorithms for 6-Kitab Madrasah Q&A Portal.
  * Supports:
  * 1. Original Random (preserves legacy repo behavior using cycle tracking).
  * 2. Sequential Navigation (forward/backward wrapping).

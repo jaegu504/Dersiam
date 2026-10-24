@@ -167,7 +167,7 @@ describe('Task 13: 100% Comprehensive Bilingual UI Audit & E2E Verification', ()
   });
 
   describe('2. Comprehensive DOM Render Audit (Indonesian Mode)', () => {
-    it('renders homeView with 100% Indonesian headings, 5 book cards, categories, descriptions, and badges', () => {
+    it('renders homeView with 100% Indonesian headings, 6 book cards, categories, descriptions, and badges', () => {
       store.setState({ activeLang: 'id', currentView: 'home' });
       unmount = renderHomeView(container, store);
 
@@ -176,11 +176,11 @@ describe('Task 13: 100% Comprehensive Bilingual UI Audit & E2E Verification', ()
       const heroSubtitle = container.querySelector('.hero-subtitle');
       const heroBadge = container.querySelector('.hero-badge');
 
-      expect(heroTitle.textContent.trim()).toBe('Lima Kitab Klasik Utama');
+      expect(heroTitle.textContent.trim()).toBe('Enam Kitab Klasik Utama');
       expect(heroSubtitle.textContent.trim()).toBe(
         "Selamat datang di portal hafalan, muthala'ah, dan ujian madrasah. Silakan pilih bidang ilmu dan kitab yang ingin dipelajari."
       );
-      expect(heroBadge.textContent.trim()).toBe("Sistem Muthala'ah dan Ujian 5 Kitab Utama");
+      expect(heroBadge.textContent.trim()).toBe("Sistem Muthala'ah dan Ujian 6 Kitab Utama");
 
       // Grid with 6 books
       const cards = container.querySelectorAll('.book-card');

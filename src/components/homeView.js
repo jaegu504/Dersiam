@@ -1,6 +1,6 @@
 /**
  * Home View (Landing Page) Component
- * 5 Kitab Selection with Neumorphic Cards & 100% Bilingual Support.
+ * 6 Kitab Selection with Neumorphic Cards & 100% Bilingual Support.
  *
  * Zero emojis - Pure SVG vector icons.
  */
@@ -81,9 +81,9 @@ export function renderHomeView(container, store) {
     <section class="home-view flex flex-col gap-8 w-full animate-fade-in">
       <!-- Hero Section -->
       <header class="hero-section neu-card flex flex-col items-center text-center gap-3 py-8 px-6">
-        <span class="hero-badge neu-badge neu-badge-accent text-xs">${dict.brandSubtitle || '5 Temel Eser'}</span>
+        <span class="hero-badge neu-badge neu-badge-accent text-xs">${dict.brandSubtitle || '6 Temel Eser'}</span>
         <h1 class="hero-title font-extrabold text-2xl md:text-3xl">
-          ${dict.welcomeTitle || 'Beş Temel Klasik Kitap'}
+          ${dict.welcomeTitle || 'Altı Temel Klasik Kitap'}
         </h1>
         <p class="hero-subtitle text-secondary max-w-2xl text-sm md:text-base leading-relaxed">
           ${dict.welcomeSubtitle || 'Ezberleme, mütalaa ve imtihan portalına hoş geldiniz.'}
@@ -129,8 +129,8 @@ export function renderHomeView(container, store) {
     const heroSubtitle = container.querySelector('.hero-subtitle');
     const kitabGrid = container.querySelector('.kitab-grid');
 
-    if (heroBadge) heroBadge.textContent = nextDict.brandSubtitle || '5 Temel Eser';
-    if (heroTitle) heroTitle.textContent = nextDict.welcomeTitle || 'Beş Temel Klasik Kitap';
+    if (heroBadge) heroBadge.textContent = nextDict.brandSubtitle || '6 Temel Eser';
+    if (heroTitle) heroTitle.textContent = nextDict.welcomeTitle || 'Altı Temel Klasik Kitap';
     if (heroSubtitle) heroSubtitle.textContent = nextDict.welcomeSubtitle || 'Ezberleme, mütalaa ve imtihan portalına hoş geldiniz.';
     if (kitabGrid) kitabGrid.setAttribute('aria-label', nextDict.selectBook || 'Kitap Seçimi');
 
