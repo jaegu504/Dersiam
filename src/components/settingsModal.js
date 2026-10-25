@@ -8,7 +8,8 @@ import { dictionary } from '../data/dictionary.js';
 import { booksMetadata } from '../data/books.js';
 import { getIconSvg } from './icons.js';
 import { loadSettings, saveSettings, resetUserProgress } from '../state/storage.js';
-import { playPureSfx } from '../services/audio.js';
+import { playPureSfx, setAudioMute } from '../services/audio.js';
+import { dialogIn } from '../services/motion.js';
 
 /**
  * Returns detailed explanation, mathematical logic, and step-by-step workflow
@@ -25,7 +26,7 @@ export function getAlgorithmExplanation(algoType, lang = 'tr') {
   const explanations = {
     random: {
       tr: {
-        title: "Orijinal Rastgele (Döngüsel) Algoritması",
+        title: "Karışık Sıralama (Tekrarsız Döngü)",
         description: "Tüm soruları karıştırarak sunar. Bir döngüde mevcut bütün sorular bitmeden hiçbir soru ikinci kez karşınıza çıkmaz.",
         mathLogic: "Soru kümesi N elemanlı ise, Fisher-Yates karıştırma yöntemiyle [0, N-1] arası rastgele permütasyon oluşturulur. Karıştırılmış kuyruk sırayla tüketilir. Kuyruk boşaldığında döngü tamamlanır ve yeni bir döngü başlar.",
         workflow: [
@@ -49,7 +50,7 @@ export function getAlgorithmExplanation(algoType, lang = 'tr') {
     },
     sequential: {
       tr: {
-        title: "Sıralı Tertip Modu",
+        title: "Kitap Sırasıyla",
         description: "Kitabın kendi asıl konu ve soru numarasına göre 1'den son soruya kadar sırayla ilerler.",
         mathLogic: "Matematiksel olarak i = (i + 1) mod N bağıntısıyla çalışır. Sorular eserin orijinal telif sırasına ve bab tertibine göre ardışık olarak gösterilir.",
         workflow: [
@@ -140,7 +141,7 @@ function trapFocus(element) {
  * @returns {() => void} Close function
  */
 export function openAlgorithmInfoModal(algoType, lang = 'tr') {
-  playPureSfx('click');
+  playPureSfx('open');
   const info = getAlgorithmExplanation(algoType, lang);
   const isTr = lang === 'tr';
 
@@ -185,13 +186,14 @@ export function openAlgorithmInfoModal(algoType, lang = 'tr') {
 
     <div class="modal-footer">
       <button class="modal-close-action-btn neu-button neu-button-primary">
-        ${isTr ? 'Anladım ve Kapat' : 'Mengerti & Tutup'}
+        ${isTr ? 'Anladım' : 'Mengerti'}
       </button>
     </div>
   `;
 
   backdrop.appendChild(modal);
   document.body.appendChild(backdrop);
+  dialogIn(backdrop, modal);
 
   const cleanupFocus = trapFocus(modal);
 
@@ -248,7 +250,7 @@ export function openAlgorithmInfoModal(algoType, lang = 'tr') {
  * @returns {() => void} Close function
  */
 export function openSettingsModal(store) {
-  playPureSfx('click');
+  playPureSfx('open');
   const state = store.getState();
   const currentLang = state.activeLang || 'tr';
   const dict = dictionary[currentLang] || dictionary.tr;
@@ -285,7 +287,7 @@ export function openSettingsModal(store) {
       <div class="modal-body flex flex-col gap-5">
         <!-- 1. Theme Selection -->
         <div class="flex flex-col gap-2">
-          <label class="font-semibold text-sm text-secondary">${d.themeToggle}</label>
+          <label class="font-semibold text-sm text-secondary">${d.themeLabel}</label>
           <div class="flex items-center gap-3">
             <button id="setting-theme-light" class="neu-button flex-1${!isDark ? ' active font-bold' : ''}">
               ${getIconSvg('sun', 16)}
@@ -300,7 +302,7 @@ export function openSettingsModal(store) {
 
         <!-- 2. Language Selection -->
         <div class="flex flex-col gap-2">
-          <label class="font-semibold text-sm text-secondary">${d.langToggle}</label>
+          <label class="font-semibold text-sm text-secondary">${d.languageLabel}</label>
           <div class="flex items-center gap-3">
             <button id="setting-lang-tr" class="neu-button flex-1${l === 'tr' ? ' active font-bold' : ''}">
               <span>${d.langTr}</span>
@@ -412,7 +414,7 @@ export function openSettingsModal(store) {
     const darkBtn = modal.querySelector('#setting-theme-dark');
 
     lightBtn?.addEventListener('click', () => {
-      playPureSfx('click');
+      playPureSfx('toggle');
       store.setState({ isDarkMode: false });
       if (typeof document !== 'undefined') {
         document.documentElement.setAttribute('data-theme', 'light');
@@ -422,7 +424,7 @@ export function openSettingsModal(store) {
     });
 
     darkBtn?.addEventListener('click', () => {
-      playPureSfx('click');
+      playPureSfx('toggle');
       store.setState({ isDarkMode: true });
       if (typeof document !== 'undefined') {
         document.documentElement.setAttribute('data-theme', 'dark');
@@ -436,14 +438,14 @@ export function openSettingsModal(store) {
     const langIdBtn = modal.querySelector('#setting-lang-id');
 
     langTrBtn?.addEventListener('click', () => {
-      playPureSfx('click');
+      playPureSfx('toggle');
       store.setState({ activeLang: 'tr' });
       saveSettings({ ...loadSettings(), activeLang: 'tr' });
       renderModalContent();
     });
 
     langIdBtn?.addEventListener('click', () => {
-      playPureSfx('click');
+      playPureSfx('toggle');
       store.setState({ activeLang: 'id' });
       saveSettings({ ...loadSettings(), activeLang: 'id' });
       renderModalContent();
@@ -455,7 +457,7 @@ export function openSettingsModal(store) {
     const fontLargeBtn = modal.querySelector('#setting-font-large');
 
     function applyFontSize(size) {
-      playPureSfx('click');
+      playPureSfx('toggle');
       store.setState({ fontSize: size });
       if (typeof document !== 'undefined') {
         document.documentElement.setAttribute('data-font-size', size);
@@ -473,8 +475,9 @@ export function openSettingsModal(store) {
     const soundBtn = modal.querySelector('#setting-sound-toggle');
     soundBtn?.addEventListener('click', () => {
       const nextMuted = !store.getState().isAudioMuted;
+      setAudioMute(nextMuted);
       if (!nextMuted) {
-        playPureSfx('click');
+        playPureSfx('toggle');
       }
       store.setState({ isAudioMuted: nextMuted });
       saveSettings({ ...loadSettings(), isAudioMuted: nextMuted });
@@ -485,7 +488,7 @@ export function openSettingsModal(store) {
     const algoRadios = modal.querySelectorAll('input[name="setting-algorithm"]');
     algoRadios.forEach(radio => {
       radio.addEventListener('change', (e) => {
-        playPureSfx('click');
+        playPureSfx('toggle');
         const selectedAlgo = e.target.value;
         store.setState({ activeAlgorithm: selectedAlgo });
         saveSettings({ ...loadSettings(), activeAlgorithm: selectedAlgo });
@@ -537,6 +540,7 @@ export function openSettingsModal(store) {
   backdrop.appendChild(modal);
   document.body.appendChild(backdrop);
   renderModalContent();
+  dialogIn(backdrop, modal);
 
   const cleanupFocus = trapFocus(modal);
 

@@ -7,7 +7,8 @@
 import { booksData } from '../data/books.js';
 import { dictionary } from '../data/dictionary.js';
 import { getNextQuestion, getNextSequentialQuestion } from '../state/algorithms.js';
-import { loadUserProgress, saveUserProgress, recordSelfEvaluation, toggleStarred, saveNote } from '../state/storage.js';
+import { loadUserProgress, saveUserProgress, recordSelfEvaluation, toggleStarred, saveNote, saveLastSession } from '../state/storage.js';
+import { slideSwap, revealDown, pop } from '../services/motion.js';
 import { playPureSfx } from '../services/audio.js';
 import { getIconSvg } from './icons.js';
 
@@ -84,6 +85,14 @@ export function renderStudyView(container, store) {
   function markCurrentViewed() {
     const currentItem = questions[currentIndex];
     if (!currentItem) return;
+    saveLastSession({
+      book: activeBook,
+      chapter: activeChapter,
+      index: currentIndex,
+      total: questions.length,
+      chapterNameTr: currentItem.chapterNameTr,
+      chapterNameId: currentItem.chapterNameId
+    });
     if (!progress.viewedIds.includes(currentItem.id)) {
       progress.viewedIds.push(currentItem.id);
       saveUserProgress(activeBook, progress);
@@ -99,11 +108,13 @@ export function renderStudyView(container, store) {
     let toastEl = container.querySelector('.study-toast');
     if (!toastEl) {
       toastEl = document.createElement('div');
-      toastEl.className = 'study-toast neu-badge neu-badge-accent fixed top-20 right-6 z-50 animate-fade-in shadow-md';
+      toastEl.className = 'study-toast';
+      toastEl.setAttribute('role', 'status');
       container.appendChild(toastEl);
     }
     toastEl.textContent = message;
     toastEl.classList.remove('hidden');
+    pop(toastEl, 0.8);
     if (toastTimer) clearTimeout(toastTimer);
     toastTimer = setTimeout(() => {
       toastEl?.classList.add('hidden');
@@ -390,7 +401,7 @@ export function renderStudyView(container, store) {
     isAnswerRevealed = false;
     isNoteOpen = false;
     store.setState({ isAnswerRevealed: false });
-    playPureSfx('click');
+    playPureSfx('next');
 
     const nextItem = getNextQuestion(
       questions,
@@ -411,13 +422,14 @@ export function renderStudyView(container, store) {
 
     markCurrentViewed();
     updateCard();
+    slideSwap(questionContainerEl, 1);
   }
 
   function goPrev() {
     isAnswerRevealed = false;
     isNoteOpen = false;
     store.setState({ isAnswerRevealed: false });
-    playPureSfx('click');
+    playPureSfx('prev');
 
     const prevItem = getNextSequentialQuestion(questions, currentIndex, 'prev');
     if (prevItem) {
@@ -429,13 +441,15 @@ export function renderStudyView(container, store) {
 
     markCurrentViewed();
     updateCard();
+    slideSwap(questionContainerEl, -1);
   }
 
   function toggleAnswer() {
     isAnswerRevealed = !isAnswerRevealed;
     store.setState({ isAnswerRevealed });
-    playPureSfx('flip');
+    playPureSfx(isAnswerRevealed ? 'reveal' : 'flip');
     updateCard();
+    if (isAnswerRevealed) revealDown(answerBox);
   }
 
   function toggleStar() {
@@ -443,8 +457,9 @@ export function renderStudyView(container, store) {
     if (!currentItem) return;
     progress = toggleStarred(progress, currentItem.id);
     saveUserProgress(activeBook, progress);
-    playPureSfx('click');
+    playPureSfx('toggle');
     updateCard();
+    pop(starBtn, 0.7);
     store.setState({ lastProgressUpdate: Date.now() });
   }
 
@@ -476,12 +491,12 @@ export function renderStudyView(container, store) {
   btnNext.addEventListener('click', goNext);
 
   container.querySelector('#btn-mode-exam')?.addEventListener('click', () => {
-    playPureSfx('click');
+    playPureSfx('start');
     store.setState({ currentView: 'exam' });
   });
 
   container.querySelector('#btn-mode-reader')?.addEventListener('click', () => {
-    playPureSfx('click');
+    playPureSfx('toggle');
     store.setState({ currentView: 'reader' });
   });
 
@@ -494,6 +509,7 @@ export function renderStudyView(container, store) {
     progress = recordSelfEvaluation(progress, currentItem.id, 'remembered');
     saveUserProgress(activeBook, progress);
     playPureSfx('chime');
+    pop(btnEvalRemembered);
     showToast(dict.evalConfirmedRemembered || 'Hafızaya kaydedildi');
     updateCard();
     store.setState({ lastProgressUpdate: Date.now() });
@@ -507,7 +523,8 @@ export function renderStudyView(container, store) {
 
     progress = recordSelfEvaluation(progress, currentItem.id, 'repeat');
     saveUserProgress(activeBook, progress);
-    playPureSfx('click');
+    playPureSfx('repeat');
+    pop(btnEvalRepeat);
     showToast(dict.evalConfirmedRepeat || 'Tekrar listesine eklendi');
     updateCard();
     store.setState({ lastProgressUpdate: Date.now() });
@@ -536,8 +553,10 @@ export function renderStudyView(container, store) {
 
   container.querySelector('#btn-note-toggle')?.addEventListener('click', () => {
     isNoteOpen = !isNoteOpen;
+    playPureSfx('toggle');
     noteContainer.classList.toggle('hidden', !isNoteOpen);
     if (isNoteOpen) {
+      revealDown(noteContainer);
       noteTextarea.focus();
     }
   });

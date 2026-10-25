@@ -227,7 +227,7 @@ describe('Task 13: 100% Comprehensive Bilingual UI Audit & E2E Verification', ()
       const settingsBtn = container.querySelector('#btn-settings-trigger');
 
       // In Turkish
-      expect(brandTitle.textContent.trim()).toBe('Klasik Medrese Portal');
+      expect(brandTitle.textContent.trim()).toBe('Klasik Medrese Portalı');
       expect(homeLabel.textContent.trim()).toBe('Ana Sayfa');
       expect(bookTitleBadge.textContent.trim()).toBe("Muhtasarü'l-Kudûrî");
       expect(langLabel.textContent.trim()).toBe('TR');
@@ -384,14 +384,14 @@ describe('Task 13: 100% Comprehensive Bilingual UI Audit & E2E Verification', ()
       expect(title).toBe('Pengaturan Portal');
 
       const modalText = modal.textContent;
-      expect(modalText).toContain('Ganti Tema');
+      expect(modalText).toContain('Tampilan');
       expect(modalText).toContain('Mode Terang');
       expect(modalText).toContain('Mode Gelap');
-      expect(modalText).toContain('Beralih ke Osmanlıca');
+      expect(modalText).toContain('Bahasa');
       expect(modalText).toContain('Ukuran Teks Arab & Terjemah');
-      expect(modalText).toContain('Ukuran Kecil');
-      expect(modalText).toContain('Ukuran Sedang');
-      expect(modalText).toContain('Ukuran Besar');
+      expect(modalText).toContain('Kecil');
+      expect(modalText).toContain('Sedang');
+      expect(modalText).toContain('Besar');
       expect(modalText).toContain('Efek Suara');
       expect(modalText).toContain('Logika Pengacakan Soal');
       expect(modalText).toContain('Acak Asli (Siklik)');
@@ -416,7 +416,7 @@ describe('Task 13: 100% Comprehensive Bilingual UI Audit & E2E Verification', ()
         expect(content).toContain('Deskripsi');
         expect(content).toContain('Logika Matematis');
         expect(content).toContain('Tahapan Alur Kerja');
-        expect(content).toContain('Mengerti & Tutup');
+        expect(content).toContain('Mengerti');
 
         if (algo === 'random') {
           expect(content).toContain('Fisher-Yates');

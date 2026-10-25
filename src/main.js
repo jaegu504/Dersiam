@@ -1,4 +1,5 @@
 import './styles/main.css';
+import './styles/taman.css';
 import store from './state/store.js';
 import { renderHeader } from './components/header.js';
 import { renderHomeView } from './components/homeView.js';
@@ -7,6 +8,26 @@ import { renderExamView } from './components/examView.js';
 import { renderReaderView } from './components/readerView.js';
 import { openSearchModal } from './components/searchModal.js';
 import { openSettingsModal } from './components/settingsModal.js';
+import { loadSettings, saveSettings } from './state/storage.js';
+import { setAudioMute } from './services/audio.js';
+
+const SETTING_KEYS = ['isDarkMode', 'isAudioMuted', 'activeAlgorithm', 'activeLang', 'fontSize'];
+
+/**
+ * Applies settings that live outside the component tree (theme, font size, mute).
+ * @param {object} state
+ */
+function applyGlobalSettings(state) {
+  setAudioMute(Boolean(state.isAudioMuted));
+  if (typeof document === 'undefined') return;
+  const root = document.documentElement;
+  root.setAttribute('data-theme', state.isDarkMode ? 'dark' : 'light');
+  root.setAttribute('lang', state.activeLang === 'id' ? 'id' : 'tr');
+  const size = state.fontSize || 'medium';
+  root.setAttribute('data-font-size', size);
+  root.style.fontSize = size === 'small' ? '14px' : size === 'large' ? '18px' : '';
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', state.isDarkMode ? '#0F1A13' : '#EEF4E8');
+}
 
 /**
  * Initializes the application lifecycle and reactive view mounting.
@@ -16,6 +37,11 @@ import { openSettingsModal } from './components/settingsModal.js';
  */
 export function initApp(appRoot = document.getElementById('app'), appStore = store) {
   if (!appRoot) return null;
+
+  // Restore saved preferences before the first render
+  const saved = loadSettings();
+  appStore.setState(Object.fromEntries(SETTING_KEYS.map((key) => [key, saved[key] ?? appStore.getState()[key]])));
+  applyGlobalSettings(appStore.getState());
 
   appRoot.innerHTML = `
     <div class="app-container">
@@ -90,6 +116,11 @@ export function initApp(appRoot = document.getElementById('app'), appStore = sto
 
   // Subscribe to view changes
   const unsubscribeView = appStore.subscribe((state, prevState) => {
+    if (SETTING_KEYS.some((key) => state[key] !== prevState?.[key])) {
+      applyGlobalSettings(state);
+      saveSettings({ ...loadSettings(), ...Object.fromEntries(SETTING_KEYS.map((key) => [key, state[key]])) });
+    }
+
     if (state.currentView !== prevState?.currentView) {
       mountView(state.currentView);
     }

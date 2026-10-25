@@ -8,6 +8,9 @@
 import { booksData, booksMetadata } from '../data/books.js';
 import { dictionary } from '../data/dictionary.js';
 import { playPureSfx } from '../services/audio.js';
+import { revealDown, slideSwap, pop, shake } from '../services/motion.js';
+
+const RING_C = 2 * Math.PI * 44;
 import { getIconSvg } from './icons.js';
 
 /**
@@ -169,13 +172,15 @@ export function renderExamView(container, store) {
           <!-- Oral Exam Section -->
           <div id="oral-section" class="flex flex-col gap-5 ${examMode === 'oral' ? '' : 'hidden'}">
             <!-- Timer Banner -->
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl bg-surface border border-subtle">
-              <div id="exam-timer" class="exam-timer neu-badge flex items-center justify-center gap-2 text-lg font-bold px-4 py-2 rounded-lg">
-                ${getIconSvg('timer', 20)}
-                <span id="timer-seconds">${timer}</span>
-                <span id="timer-unit-label" class="text-xs text-secondary font-normal"></span>
+            <div class="exam-timer-row flex flex-col items-center gap-3">
+              <div id="exam-timer" class="exam-timer exam-ring" role="timer" aria-live="off">
+                <svg viewBox="0 0 100 100" aria-hidden="true">
+                  <circle class="ring-track" cx="50" cy="50" r="44"></circle>
+                  <circle class="ring-fill" id="ring-fill" cx="50" cy="50" r="44" stroke-dasharray="${RING_C}" stroke-dashoffset="0"></circle>
+                </svg>
+                <span class="ring-num"><span id="timer-seconds">${timer}</span><span id="timer-unit-label"></span></span>
               </div>
-              <p id="oral-hint-text" class="text-xs sm:text-sm text-secondary text-center sm:text-right"></p>
+              <p id="oral-hint-text" class="text-sm text-secondary text-center"></p>
             </div>
 
             <!-- Check Answer Button -->
@@ -275,7 +280,12 @@ export function renderExamView(container, store) {
         if (timer <= 0) {
           timer = 0;
           stopTimer();
-          playPureSfx('chime');
+          playPureSfx('timeUp');
+          shake(examTimer);
+        } else if (timer <= 5) {
+          playPureSfx('tickUrgent');
+        } else if (timer <= 10) {
+          playPureSfx('tick');
         }
       } else {
         stopTimer();
@@ -286,6 +296,10 @@ export function renderExamView(container, store) {
   function updateTimerDisplay() {
     if (timerSecondsEl) {
       timerSecondsEl.textContent = String(timer);
+    }
+    const ringFill = container.querySelector('#ring-fill');
+    if (ringFill) {
+      ringFill.setAttribute('stroke-dashoffset', String(RING_C * (1 - timer / 30)));
     }
     if (examTimer) {
       if (timer <= 5) {
@@ -382,8 +396,9 @@ export function renderExamView(container, store) {
     if (placeholderEl) {
       placeholderEl.addEventListener('click', () => {
         isClozeRevealed = true;
-        playPureSfx('flip');
+        playPureSfx('reveal');
         updateView();
+        pop(clozeAnswerContainer.querySelector('.revealed-highlight'), 0.6);
       });
     }
   }
@@ -395,7 +410,7 @@ export function renderExamView(container, store) {
       store.setState({ examMode: 'oral' });
       timer = 30;
       isOralRevealed = false;
-      playPureSfx('click');
+      playPureSfx('toggle');
       updateView();
       startTimer();
     }
@@ -407,21 +422,23 @@ export function renderExamView(container, store) {
       store.setState({ examMode: 'cloze' });
       stopTimer();
       isClozeRevealed = false;
-      playPureSfx('click');
+      playPureSfx('toggle');
       updateView();
     }
   });
 
   btnCheckOral.addEventListener('click', () => {
     isOralRevealed = true;
-    playPureSfx('click');
+    playPureSfx('reveal');
     updateView();
+    revealDown(container.querySelector('#exam-answer-container'));
   });
 
   btnToggleCloze.addEventListener('click', () => {
     isClozeRevealed = !isClozeRevealed;
-    playPureSfx('flip');
+    playPureSfx(isClozeRevealed ? 'reveal' : 'flip');
     updateView();
+    if (isClozeRevealed) pop(clozeAnswerContainer.querySelector('.revealed-highlight'), 0.6);
   });
 
   btnNextExam.addEventListener('click', () => {
@@ -435,8 +452,9 @@ export function renderExamView(container, store) {
     isClozeRevealed = nextState.isClozeRevealed;
     isOralRevealed = nextState.isOralRevealed;
 
-    playPureSfx('click');
+    playPureSfx('next');
     updateView();
+    slideSwap(container.querySelector('#exam-card'), 1);
 
     if (examMode === 'oral') {
       startTimer();

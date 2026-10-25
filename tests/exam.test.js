@@ -153,7 +153,7 @@ describe('Exam Mode Component & Logic (Task 10)', () => {
       vi.advanceTimersByTime(5000);
       expect(timerEl.textContent).toContain('0');
       expect(timerEl.classList.contains('timer-warning')).toBe(true);
-      expect(playPureSfxSpy).toHaveBeenCalledWith('chime');
+      expect(playPureSfxSpy).toHaveBeenCalledWith('timeUp');
 
       // Advancing further does not go below 0
       vi.advanceTimersByTime(2000);
@@ -171,7 +171,7 @@ describe('Exam Mode Component & Logic (Task 10)', () => {
       checkOralBtn.click();
 
       expect(answerContainer.classList.contains('hidden')).toBe(false);
-      expect(playPureSfxSpy).toHaveBeenCalledWith('click');
+      expect(playPureSfxSpy).toHaveBeenCalledWith('reveal');
     });
 
     it('continuous next question resets timer to 30s and hides revealed answer', () => {

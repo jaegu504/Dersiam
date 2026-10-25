@@ -9,6 +9,7 @@ import { booksData, booksMetadata } from '../data/books.js';
 import { dictionary } from '../data/dictionary.js';
 import { getIconSvg } from './icons.js';
 import { playPureSfx } from '../services/audio.js';
+import { staggerIn, dialogIn } from '../services/motion.js';
 
 /**
  * Traps keyboard focus within an element.
@@ -51,7 +52,7 @@ function trapFocus(element) {
  * @returns {() => void} Close modal function
  */
 export function openSearchModal(store) {
-  playPureSfx('click');
+  playPureSfx('open');
   const state = store.getState();
   const lang = state.activeLang || 'tr';
   const dict = dictionary[lang] || dictionary.tr;
@@ -103,6 +104,7 @@ export function openSearchModal(store) {
 
   backdrop.appendChild(modal);
   document.body.appendChild(backdrop);
+  dialogIn(backdrop, modal);
 
   const cleanupFocus = trapFocus(modal);
   const inputEl = modal.querySelector('input.search-input');
@@ -120,6 +122,13 @@ export function openSearchModal(store) {
     return lang === 'id'
       ? (item.chapterNameId || item.chapterNameTr || item.chapterId || '')
       : (item.chapterNameTr || item.chapterNameId || item.chapterId || '');
+  }
+
+  // One soft pop per pause in typing, not per keystroke
+  let popTimer = null;
+  function schedulePop() {
+    if (popTimer) clearTimeout(popTimer);
+    popTimer = setTimeout(() => playPureSfx('pop'), 220);
   }
 
   function handleSearch() {
@@ -176,9 +185,11 @@ export function openSearchModal(store) {
 
     // Attach click and enter key handlers to each result item
     const resultElements = resultsList.querySelectorAll('.search-result-item');
+    staggerIn(Array.from(resultElements).slice(0, 8), { y: 10, stagger: 0.04 });
+    schedulePop();
     resultElements.forEach(itemEl => {
       function triggerJump() {
-        playPureSfx('click');
+        playPureSfx('start');
         const bookKey = itemEl.getAttribute('data-book');
         const chapterId = itemEl.getAttribute('data-chapter');
         const itemId = itemEl.getAttribute('data-id');
@@ -214,6 +225,7 @@ export function openSearchModal(store) {
   inputEl?.addEventListener('input', handleSearch);
 
   function closeModal() {
+    if (popTimer) clearTimeout(popTimer);
     cleanupFocus();
     if (typeof window !== 'undefined') {
       window.removeEventListener('keydown', handleKeyDown);

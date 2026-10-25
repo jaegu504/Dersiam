@@ -54,8 +54,8 @@ describe('Neumorphic Styling & Typography System', () => {
       expect(content).toContain('--neu-floating');
       expect(content).toContain('[data-theme="dark"]');
       expect(content).toContain('.theme-dark');
-      expect(content).toContain('#F5F2EA');
-      expect(content).toContain('#0F141F');
+      expect(content).toContain('#EEF4E8');
+      expect(content).toContain('#0F1A13');
     });
 
     it('defines tactile neumorphic utility and component classes', () => {

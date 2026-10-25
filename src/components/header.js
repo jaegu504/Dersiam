@@ -60,6 +60,7 @@ export function renderHeader(container, store) {
       <!-- Left Section: Brand & Context Navigation -->
       <div class="header-left flex items-center gap-2 min-w-0">
         <div class="header-brand flex items-center gap-2 shrink-0">
+          <span class="brand-mark" aria-hidden="true">درس عام</span>
           <span class="brand-title font-bold text-lg cursor-pointer">${getLocalizedText(initialLang, 'brandTitle', 'Klasik Medrese Portal')}</span>
         </div>
 
@@ -110,6 +111,12 @@ export function renderHeader(container, store) {
   const settingsBtn = container.querySelector('#btn-settings-trigger');
 
   // Event handlers
+  container.querySelector('.header-brand')?.addEventListener('click', (e) => {
+    if (e.target === brandTitleEl) return;
+    playPureSfx('click');
+    store.setState({ currentView: 'home' });
+  });
+
   brandTitleEl?.addEventListener('click', () => {
     playPureSfx('click');
     store.setState({ currentView: 'home' });

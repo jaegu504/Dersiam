@@ -9,11 +9,19 @@ import { booksMetadata } from '../data/books.js';
 import { dictionary } from '../data/dictionary.js';
 import { playPureSfx } from '../services/audio.js';
 import { getIconSvg } from './icons.js';
+import { loadLastSession } from '../state/storage.js';
+import { staggerIn } from '../services/motion.js';
 
 const BOOK_KEYS = ['quduri', 'talhis', 'kafiye', 'menar', 'akaid', 'maksud'];
 
+/** First letter of the book's distinctive word: "مختصر القدوري" gives "ق". */
+function bookGlyph(titleAr) {
+  const word = titleAr.replace(/^(كتاب|متن|مختصر)\s+/, '').trim();
+  return word.replace(/^ال/, '').charAt(0);
+}
+
 /**
- * Renders the home landing page with hero header and 5 classical kitab cards.
+ * Renders the home landing page: hero, "continue" card and the six kitab cards.
  * @param {HTMLElement} container - View mount element (#view-mount)
  * @param {import('../state/store.js').AppStore} store - Reactive application store
  */
@@ -33,25 +41,26 @@ export function renderHomeView(container, store) {
     const category = isTr ? book.categoryTr : book.categoryId;
     const desc = isTr ? book.descTr : book.descId;
     const author = isTr ? book.authorTr : book.authorId;
-    const chapterLabel = dict.totalChapters || (isTr ? 'Bölüm' : 'Bab');
-    const questionLabel = dict.totalQuestions || (isTr ? 'Soru' : 'Soal');
+    const chapterLabel = dict.chaptersShort || (isTr ? 'Bölüm' : 'Bab');
+    const questionLabel = dict.questionsShort || (isTr ? 'Soru' : 'Soal');
     const startLabel = dict.startStudying || (isTr ? 'Mütalaaya Başla' : 'Mulai Belajar');
 
     return `
-      <article class="book-card neu-card neu-card-interactive flex flex-col justify-between gap-4" data-book-id="${key}" role="button" tabindex="0" aria-label="${title}">
+      <article class="book-card neu-card neu-card-interactive flex flex-col justify-between gap-4" data-book-id="${key}" role="button" tabindex="0" aria-label="${title}" style="--book-color: ${book.themeColor || 'var(--accent-primary)'}">
         <div class="flex flex-col gap-3">
           <div class="flex items-center justify-between gap-2">
+            <span class="book-chip" aria-hidden="true">${bookGlyph(book.titleAr)}</span>
             <span class="category-badge neu-badge neu-badge-accent">${category}</span>
-            <span class="author-name text-xs text-secondary">${author}</span>
           </div>
 
-          <div class="arabic-title font-arabic text-rtl text-2xl font-bold py-1" style="color: ${book.themeColor || 'inherit'}">
+          <div class="arabic-title font-arabic text-rtl font-bold">
             ${book.titleAr}
           </div>
 
-          <h3 class="book-title font-bold text-lg leading-tight">
+          <h3 class="book-title">
             ${title}
           </h3>
+          <span class="author-name text-xs text-secondary">${author}</span>
 
           <p class="book-desc text-secondary text-sm leading-relaxed">
             ${desc}
@@ -77,18 +86,46 @@ export function renderHomeView(container, store) {
     `;
   }).join('');
 
+  const session = loadLastSession();
+  const sessionBook = session && booksMetadata[session.book] ? booksMetadata[session.book] : null;
+
+  function resumeHtml(currentLang) {
+    if (!sessionBook) return '';
+    const d = dictionary[currentLang] || dictionary.tr;
+    const tr = currentLang === 'tr';
+    const total = Math.max(session.total || 0, 1);
+    const pos = Math.min((session.index || 0) + 1, total);
+    const chapterName = session.chapter === 'all' || !session.chapter
+      ? (d.allChapters || '')
+      : ((tr ? session.chapterNameTr : session.chapterNameId) || '');
+    const meta = `${chapterName} · ${tr ? 'Soru' : 'Soal'} ${pos}/${total}`;
+    return `
+      <a href="#" class="resume-card neu-card" id="resume-card" aria-label="${d.continueStudying}: ${tr ? sessionBook.titleTr : sessionBook.titleId}, ${meta}">
+        <span class="resume-top">
+          <span class="resume-label">${d.continueStudying}</span>
+          <span class="resume-title font-arabic">${sessionBook.titleAr}</span>
+        </span>
+        <span class="resume-meta">${meta}</span>
+        <span class="resume-bar" aria-hidden="true"><i style="width: ${Math.round((pos / total) * 100)}%"></i></span>
+        <span class="resume-go">${d.continueShort}${getIconSvg('arrowRight', 16)}</span>
+      </a>
+    `;
+  }
+
   container.innerHTML = `
     <section class="home-view flex flex-col gap-8 w-full animate-fade-in">
       <!-- Hero Section -->
-      <header class="hero-section neu-card flex flex-col items-center text-center gap-3 py-8 px-6">
+      <header class="hero-section flex flex-col gap-3">
         <span class="hero-badge neu-badge neu-badge-accent text-xs">${dict.brandSubtitle || '6 Temel Eser'}</span>
-        <h1 class="hero-title font-extrabold text-2xl md:text-3xl">
+        <h1 class="hero-title">
           ${dict.welcomeTitle || 'Altı Temel Klasik Kitap'}
         </h1>
-        <p class="hero-subtitle text-secondary max-w-2xl text-sm md:text-base leading-relaxed">
+        <p class="hero-subtitle text-secondary">
           ${dict.welcomeSubtitle || 'Ezberleme, mütalaa ve imtihan portalına hoş geldiniz.'}
         </p>
       </header>
+
+      ${resumeHtml(lang)}
 
       <!-- Kitab Cards Grid -->
       <section class="kitab-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" aria-label="${dict.selectBook || 'Kitap Seçimi'}">
@@ -97,18 +134,34 @@ export function renderHomeView(container, store) {
     </section>
   `;
 
+  function bindResume() {
+    container.querySelector('#resume-card')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      playPureSfx('start');
+      store.setState({
+        activeBook: session.book,
+        currentView: 'study',
+        activeChapter: session.chapter || 'all',
+        currentQuestionIndex: session.index || 0
+      });
+    });
+  }
+  bindResume();
+
   // Attach click listeners to cards
   const cardElements = container.querySelectorAll('.book-card');
+  staggerIn(container.querySelectorAll('.hero-section > *, .resume-card, .book-card'), { stagger: 0.05 });
   cardElements.forEach((card) => {
     const bookKey = card.getAttribute('data-book-id');
 
     const handleSelect = (e) => {
       e.preventDefault();
-      playPureSfx('click');
+      playPureSfx('start');
       store.setState({
         activeBook: bookKey,
         currentView: 'study',
-        activeChapter: 'all'
+        activeChapter: 'all',
+        currentQuestionIndex: 0
       });
     };
 
@@ -134,6 +187,12 @@ export function renderHomeView(container, store) {
     if (heroSubtitle) heroSubtitle.textContent = nextDict.welcomeSubtitle || 'Ezberleme, mütalaa ve imtihan portalına hoş geldiniz.';
     if (kitabGrid) kitabGrid.setAttribute('aria-label', nextDict.selectBook || 'Kitap Seçimi');
 
+    const resumeEl = container.querySelector('#resume-card');
+    if (resumeEl) {
+      resumeEl.outerHTML = resumeHtml(currentLang);
+      bindResume();
+    }
+
     cardElements.forEach((card) => {
       const key = card.getAttribute('data-book-id');
       const book = booksMetadata[key];
@@ -143,8 +202,8 @@ export function renderHomeView(container, store) {
       const category = nextIsTr ? book.categoryTr : book.categoryId;
       const desc = nextIsTr ? book.descTr : book.descId;
       const author = nextIsTr ? book.authorTr : book.authorId;
-      const chapterLabel = nextDict.totalChapters || (nextIsTr ? 'Bölüm' : 'Bab');
-      const questionLabel = nextDict.totalQuestions || (nextIsTr ? 'Soru' : 'Soal');
+      const chapterLabel = nextDict.chaptersShort || (nextIsTr ? 'Bölüm' : 'Bab');
+      const questionLabel = nextDict.questionsShort || (nextIsTr ? 'Soru' : 'Soal');
       const startLabel = nextDict.startStudying || (nextIsTr ? 'Mütalaaya Başla' : 'Mulai Belajar');
 
       card.setAttribute('aria-label', title);

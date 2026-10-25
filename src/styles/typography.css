@@ -1,8 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Scheherazade+New:wght@400;600;700&display=swap');
-
 :root {
   --font-latin: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-arabic: 'Amiri', 'Scheherazade New', 'Traditional Arabic', serif;
+  --font-display: 'Baloo 2', 'Plus Jakarta Sans', system-ui, sans-serif;
 
   --font-size-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.8125rem);
   --font-size-sm: clamp(0.8125rem, 0.78rem + 0.25vw, 0.875rem);

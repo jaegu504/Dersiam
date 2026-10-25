@@ -571,12 +571,8 @@ select {
   gap: 0.75rem;
   width: 100%;
   padding-top: 0.65rem;
-  border-top: 2px solid rgba(142, 80, 40, 0.35);
+  border-top: 2px solid var(--border-subtle);
   position: relative;
-}
-
-[data-theme="dark"] .v-tree-branches {
-  border-top-color: rgba(212, 139, 71, 0.4);
 }
 
 .v-tree-branch {

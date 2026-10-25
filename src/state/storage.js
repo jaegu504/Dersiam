@@ -5,7 +5,8 @@
 
 export const STORAGE_KEYS = {
   progress: (bookKey) => `soru_cevap_progress_${bookKey}`,
-  settings: 'soru_cevap_settings'
+  settings: 'soru_cevap_settings',
+  lastSession: 'soru_cevap_last_session'
 };
 
 export const DEFAULT_SETTINGS = {
@@ -253,5 +254,37 @@ export function saveSettings(settings) {
     }
   } catch {
     // Graceful fallback
+  }
+}
+
+/**
+ * Remembers where the user last studied, for the home "continue" card.
+ *
+ * @param {{ book: string, chapter: string, index: number, total: number, chapterNameTr?: string, chapterNameId?: string }} session
+ */
+export function saveLastSession(session) {
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(STORAGE_KEYS.lastSession, JSON.stringify({ ...session, at: Date.now() }));
+    }
+  } catch {
+    // Graceful fallback
+  }
+}
+
+/**
+ * Loads the last study position, or null when there is none.
+ *
+ * @returns {{ book: string, chapter: string, index: number, total: number, chapterNameTr?: string, chapterNameId?: string } | null}
+ */
+export function loadLastSession() {
+  try {
+    const raw = typeof localStorage !== 'undefined'
+      ? localStorage.getItem(STORAGE_KEYS.lastSession)
+      : null;
+    const parsed = raw ? JSON.parse(raw) : null;
+    return parsed && typeof parsed.book === 'string' ? parsed : null;
+  } catch {
+    return null;
   }
 }
