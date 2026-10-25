@@ -657,7 +657,12 @@ export function renderStudyView(container, store) {
     } else if (nextState.activeLang !== prevState?.activeLang) {
       updateChapterOptions();
       updateCard();
-    } else if (typeof nextState.currentQuestionIndex === 'number' && nextState.currentQuestionIndex !== currentIndex) {
+    } else if (
+      // Only an explicit jump moves the card; a stale index must not undo next/prev
+      typeof nextState.currentQuestionIndex === 'number' &&
+      nextState.currentQuestionIndex !== prevState?.currentQuestionIndex &&
+      nextState.currentQuestionIndex !== currentIndex
+    ) {
       currentIndex = nextState.currentQuestionIndex;
       markCurrentViewed();
       updateCard();

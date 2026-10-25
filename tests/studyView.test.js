@@ -165,6 +165,19 @@ describe('Study View Component (Task 8)', () => {
       expect(questionText.innerHTML).toContain(firstQuduri.question_tr);
     });
 
+    it('keeps advancing when the store carries a start index (opened from home or search)', () => {
+      store.setState({ currentQuestionIndex: 0 });
+      unmount = renderStudyView(container, store);
+
+      const nextBtn = container.querySelector('#btn-next');
+      const counter = container.querySelector('#question-counter');
+
+      nextBtn.click();
+      expect(counter.textContent).toContain('2 /');
+      nextBtn.click();
+      expect(counter.textContent).toContain('3 /');
+    });
+
     it('records mutually exclusive self-evaluations and persists to storage', () => {
       unmount = renderStudyView(container, store);
 
