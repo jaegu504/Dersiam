@@ -5,7 +5,7 @@
  */
 
 import { searchAllBooks } from '../services/search.js';
-import { booksData, booksMetadata } from '../data/books.js';
+import { booksMetadata, getBookQuestions } from '../data/books.js';
 import { dictionary } from '../data/dictionary.js';
 import { getIconSvg } from './icons.js';
 import { playPureSfx } from '../services/audio.js';
@@ -166,12 +166,14 @@ export function openSearchModal(store) {
           role="button"
           tabindex="0"
           data-book="${res.item.bookKey}"
+          data-source="${res.item.source || ''}"
           data-chapter="${res.item.chapterId || ''}"
           data-id="${res.item.id}"
         >
           <div class="flex items-center justify-between gap-2">
             <div class="flex items-center gap-2 flex-wrap">
               <span class="neu-badge neu-badge-accent book-badge">${bookTitle}</span>
+              ${res.item.source === 'mufassal' ? `<span class="neu-badge neu-badge-warning source-badge">${dict.sourceMufassal}</span>` : ''}
               <span class="text-xs text-secondary result-chapter">${chapterName}</span>
             </div>
             <span class="neu-badge lang-badge font-bold">${langLabel}</span>
@@ -194,7 +196,8 @@ export function openSearchModal(store) {
         const chapterId = itemEl.getAttribute('data-chapter');
         const itemId = itemEl.getAttribute('data-id');
 
-        const allQuestions = booksData[bookKey] || [];
+        const source = itemEl.getAttribute('data-source') || 'muhtasar';
+        const allQuestions = getBookQuestions(bookKey, source);
         const chapterQuestions = (chapterId && chapterId !== 'all')
           ? allQuestions.filter(q => q.chapterId === chapterId)
           : allQuestions;
@@ -203,6 +206,7 @@ export function openSearchModal(store) {
 
         store.setState({
           activeBook: bookKey,
+          activeSource: source,
           currentView: 'study',
           activeChapter: chapterId || 'all',
           isAnswerRevealed: false,

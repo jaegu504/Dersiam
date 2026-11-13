@@ -5,7 +5,7 @@
  * Zero emojis - 100% Bilingual
  */
 
-import { booksData } from '../data/books.js';
+import { booksData, bookSources } from '../data/books.js';
 
 const ARABIC_UNICODE_REGEX = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
 
@@ -320,8 +320,10 @@ export function searchAllBooks(query, maxResults = 50) {
     return [];
   }
 
+  // Default sets plus every alternative source (e.g. Quduri "Lengkap")
+  const extraSets = Object.values(bookSources).flatMap((sources) => sources.slice(1).map((s) => s.data));
   const results = [];
-  for (const items of Object.values(booksData)) {
+  for (const items of [...Object.values(booksData), ...extraSets]) {
     for (const item of items) {
       const res = evaluateItem(item, query);
       if (res) {

@@ -5,7 +5,7 @@
  * 100% Bilingual Reactivity: Instant Ottoman Turkish (TR) <-> Indonesian (ID) switching.
  */
 
-import { booksData, booksMetadata } from '../data/books.js';
+import { booksMetadata, getBookQuestions } from '../data/books.js';
 import { dictionary } from '../data/dictionary.js';
 import { playPureSfx } from '../services/audio.js';
 import { revealDown, slideSwap, pop, shake } from '../services/motion.js';
@@ -120,7 +120,7 @@ export function renderExamView(container, store) {
   }
 
   function getQuestions() {
-    return booksData[activeBook] || [];
+    return getBookQuestions(activeBook, store.getState().activeSource);
   }
 
   let questions = getQuestions();

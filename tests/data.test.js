@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { dictionary } from '../src/data/dictionary.js';
-import { booksMetadata, booksData } from '../src/data/books.js';
+import { booksMetadata, booksData, bookSources, getBookQuestions } from '../src/data/books.js';
 
 describe('Data Schema and Bilingual Dictionary', () => {
   it('contains matching translation keys for TR and ID with no missing values', () => {
@@ -79,6 +79,26 @@ describe('Data Schema and Bilingual Dictionary', () => {
         expect(item.clozeKeyWord_id).toBeTruthy();
         expect(item.answer_tr).toContain(item.clozeKeyWord_tr);
         expect(item.answer_id).toContain(item.clozeKeyWord_id);
+      });
+    });
+  });
+
+  it('keeps every alternative source complete, unique and emoji-free', () => {
+    const emojiRegex = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u;
+    Object.entries(bookSources).forEach(([bookKey, sources]) => {
+      expect(sources[0].data).toBe(booksData[bookKey]);
+      sources.slice(1).forEach(({ id, data }) => {
+        expect(data.length).toBeGreaterThan(0);
+        expect(getBookQuestions(bookKey, id)).toBe(data);
+        expect(new Set(data.map((q) => q.id)).size).toBe(data.length);
+        data.forEach((item) => {
+          expect(item.bookKey).toBe(bookKey);
+          expect(item.source).toBe(id);
+          ['question_tr', 'answer_tr', 'question_id', 'answer_id', 'chapterId'].forEach((f) => expect(item[f]).toBeTruthy());
+          expect(item.answer_tr.replace(/<[^>]+>/g, ' ')).toContain(item.clozeKeyWord_tr);
+          expect(item.answer_id.replace(/<[^>]+>/g, ' ')).toContain(item.clozeKeyWord_id);
+          expect(emojiRegex.test(item.answer_tr + item.answer_id)).toBe(false);
+        });
       });
     });
   });

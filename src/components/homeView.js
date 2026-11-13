@@ -5,7 +5,7 @@
  * Zero emojis - Pure SVG vector icons.
  */
 
-import { booksMetadata } from '../data/books.js';
+import { booksMetadata, bookSources } from '../data/books.js';
 import { dictionary } from '../data/dictionary.js';
 import { playPureSfx } from '../services/audio.js';
 import { getIconSvg } from './icons.js';
@@ -75,6 +75,7 @@ export function renderHomeView(container, store) {
             <span class="question-count neu-badge neu-badge-info">
               ${book.totalQuestions} ${questionLabel}
             </span>
+            ${bookSources[key] ? `<span class="source-count-badge neu-badge neu-badge-warning">${bookSources[key].length} ${dict.sourceLabel}</span>` : ''}
           </div>
 
           <button type="button" class="neu-button neu-button-primary w-full flex items-center justify-center gap-2">
@@ -140,6 +141,7 @@ export function renderHomeView(container, store) {
       playPureSfx('start');
       store.setState({
         activeBook: session.book,
+        ...(session.source ? { activeSource: session.source } : {}),
         currentView: 'study',
         activeChapter: session.chapter || 'all',
         currentQuestionIndex: session.index || 0
@@ -225,6 +227,9 @@ export function renderHomeView(container, store) {
 
       const questionEl = card.querySelector('.question-count');
       if (questionEl) questionEl.textContent = `${book.totalQuestions} ${questionLabel}`;
+
+      const sourceBadge = card.querySelector('.source-count-badge');
+      if (sourceBadge) sourceBadge.textContent = `${bookSources[key].length} ${nextDict.sourceLabel}`;
 
       const startLabelEl = card.querySelector('.start-btn-label');
       if (startLabelEl) startLabelEl.textContent = startLabel;

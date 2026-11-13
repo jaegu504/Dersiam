@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { getStudyCardState, renderStudyView } from '../src/components/studyView.js';
 import { createStore, DEFAULT_STATE } from '../src/state/store.js';
 import { loadUserProgress, resetUserProgress, saveUserProgress } from '../src/state/storage.js';
-import { booksData } from '../src/data/books.js';
+import { booksData, bookSources } from '../src/data/books.js';
 
 describe('Study View Component (Task 8)', () => {
   describe('getStudyCardState', () => {
@@ -176,6 +176,25 @@ describe('Study View Component (Task 8)', () => {
       expect(counter.textContent).toContain('2 /');
       nextBtn.click();
       expect(counter.textContent).toContain('3 /');
+    });
+
+    it('switches Quduri between the short and the detailed question set', () => {
+      unmount = renderStudyView(container, store);
+      const counter = container.querySelector('#question-counter');
+      const switcher = container.querySelector('#source-switch');
+      expect(switcher.classList.contains('hidden')).toBe(false);
+      expect(counter.textContent).toContain(`/ ${booksData.quduri.length}`);
+
+      switcher.querySelector('[data-source="mufassal"]').click();
+      expect(store.getState().activeSource).toBe('mufassal');
+      expect(counter.textContent).toContain(`/ ${bookSources.quduri[1].data.length}`);
+      expect(container.querySelector('#question-text').innerHTML).toContain(bookSources.quduri[1].data[0].question_tr);
+    });
+
+    it('hides the source switch for books with a single source', () => {
+      store.setState({ activeBook: 'talhis' });
+      unmount = renderStudyView(container, store);
+      expect(container.querySelector('#source-switch').classList.contains('hidden')).toBe(true);
     });
 
     it('records mutually exclusive self-evaluations and persists to storage', () => {

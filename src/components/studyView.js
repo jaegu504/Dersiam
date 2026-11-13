@@ -4,7 +4,7 @@
  * 100% Bilingual Reactivity: Instant TR (Osmanlıca) <-> ID (Indonesian) switching.
  */
 
-import { booksData } from '../data/books.js';
+import { getBookQuestions as questionsFor, bookSources } from '../data/books.js';
 import { dictionary } from '../data/dictionary.js';
 import { getNextQuestion, getNextSequentialQuestion } from '../state/algorithms.js';
 import { loadUserProgress, saveUserProgress, recordSelfEvaluation, toggleStarred, saveNote, saveLastSession } from '../state/storage.js';
@@ -51,7 +51,7 @@ export function renderStudyView(container, store) {
   }
 
   function getBookQuestions() {
-    return booksData[activeBook] || [];
+    return questionsFor(activeBook, store.getState().activeSource);
   }
 
   function getChapters() {
@@ -87,6 +87,7 @@ export function renderStudyView(container, store) {
     if (!currentItem) return;
     saveLastSession({
       book: activeBook,
+      source: store.getState().activeSource,
       chapter: activeChapter,
       index: currentIndex,
       total: questions.length,
@@ -145,6 +146,9 @@ export function renderStudyView(container, store) {
             <span class="mode-reader-label">${initialDict.readerMode || 'Düz Okuma'}</span>
           </button>
         </div>
+
+        <!-- Source switch (only for books with more than one question set) -->
+        <div id="source-switch" class="source-switch hidden" role="group"></div>
 
         <!-- Chapter Select & Star -->
         <div class="chapter-star-group flex items-center gap-2">
@@ -285,6 +289,31 @@ export function renderStudyView(container, store) {
   const modeStudyLabel = container.querySelector('.mode-study-label');
   const modeExamLabel = container.querySelector('.mode-exam-label');
   const modeReaderLabel = container.querySelector('.mode-reader-label');
+
+  const sourceSwitch = container.querySelector('#source-switch');
+
+  // Source buttons: Quduri has a short and a detailed question set
+  function updateSourceSwitch() {
+    const sources = bookSources[activeBook];
+    sourceSwitch.classList.toggle('hidden', !sources);
+    if (!sources) return;
+    const s = store.getState();
+    const isTr = (s.activeLang || 'tr') === 'tr';
+    const current = sources.some((src) => src.id === s.activeSource) ? s.activeSource : sources[0].id;
+    sourceSwitch.setAttribute('aria-label', getDict().sourceLabel || (isTr ? 'Kaynak' : 'Sumber'));
+    sourceSwitch.innerHTML = sources.map((src) => `
+      <button type="button" class="neu-button source-btn${src.id === current ? ' active' : ''}" data-source="${src.id}" aria-pressed="${src.id === current}">
+        ${isTr ? src.titleTr : src.titleId}
+        <span class="source-count">${src.data.length}</span>
+      </button>`).join('');
+  }
+
+  sourceSwitch.addEventListener('click', (e) => {
+    const btn = e.target.closest('.source-btn');
+    if (!btn || btn.classList.contains('active')) return;
+    playPureSfx('toggle');
+    store.setState({ activeSource: btn.getAttribute('data-source'), activeChapter: 'all', currentQuestionIndex: 0 });
+  });
 
   // Repopulate chapter select options
   function updateChapterOptions() {
@@ -654,7 +683,18 @@ export function renderStudyView(container, store) {
       chapterSelect.value = activeChapter;
       markCurrentViewed();
       updateCard();
+    } else if (nextState.activeSource !== prevState?.activeSource) {
+      questions = getFilteredQuestions();
+      currentIndex = typeof nextState.currentQuestionIndex === 'number' ? nextState.currentQuestionIndex : 0;
+      displayedIndices.length = 0;
+      isAnswerRevealed = false;
+      updateSourceSwitch();
+      updateChapterOptions();
+      markCurrentViewed();
+      updateCard();
+      slideSwap(questionContainerEl, 1);
     } else if (nextState.activeLang !== prevState?.activeLang) {
+      updateSourceSwitch();
       updateChapterOptions();
       updateCard();
     } else if (
@@ -670,6 +710,7 @@ export function renderStudyView(container, store) {
   });
 
   // Initial load
+  updateSourceSwitch();
   updateChapterOptions();
   updateCard();
 

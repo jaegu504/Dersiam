@@ -17,6 +17,7 @@ import { kafiyeData } from './kafiye.js';
 import { menarData } from './menar.js';
 import { akaidData } from './akaid.js';
 import { maksudData } from './maksud.js';
+import { quduriMufassalData } from './quduriMufassal.js';
 
 export const booksMetadata = {
   quduri: {
@@ -110,6 +111,28 @@ export const booksMetadata = {
     themeColor: "#0D9488"
   }
 };
+
+/**
+ * Alternative question sets per book. The first entry is the default and
+ * matches booksData[bookKey]. Books without an entry have a single source.
+ */
+export const bookSources = {
+  quduri: [
+    { id: 'muhtasar', titleTr: 'Kısa', titleId: 'Ringkas', data: quduriData },
+    { id: 'mufassal', titleTr: 'Geniş Açıklamalı', titleId: 'Lengkap', data: quduriMufassalData }
+  ]
+};
+
+/**
+ * Returns the questions of a book for the chosen source, falling back to the default set.
+ * @param {string} bookKey
+ * @param {string} [sourceId]
+ * @returns {object[]}
+ */
+export function getBookQuestions(bookKey, sourceId) {
+  const source = bookSources[bookKey]?.find((s) => s.id === sourceId);
+  return source ? source.data : (booksData[bookKey] || []);
+}
 
 export const booksData = {
   quduri: quduriData,

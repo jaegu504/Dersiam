@@ -12,6 +12,7 @@ export const DEFAULT_STATE = {
   isDarkMode: false,
   isAudioMuted: false,
   activeAlgorithm: 'random',
+  activeSource: 'muhtasar',
   examMode: 'oral',
   examTimerSec: 30,
   isAnswerRevealed: false

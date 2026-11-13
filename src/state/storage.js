@@ -13,6 +13,7 @@ export const DEFAULT_SETTINGS = {
   isDarkMode: false,
   isAudioMuted: false,
   activeAlgorithm: 'random',
+  activeSource: 'muhtasar',
   activeLang: 'tr',
   fontSize: 'medium'
 };

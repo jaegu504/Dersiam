@@ -11,7 +11,7 @@ import { openSettingsModal } from './components/settingsModal.js';
 import { loadSettings, saveSettings } from './state/storage.js';
 import { setAudioMute } from './services/audio.js';
 
-const SETTING_KEYS = ['isDarkMode', 'isAudioMuted', 'activeAlgorithm', 'activeLang', 'fontSize'];
+const SETTING_KEYS = ['isDarkMode', 'isAudioMuted', 'activeAlgorithm', 'activeLang', 'fontSize', 'activeSource'];
 
 /**
  * Applies settings that live outside the component tree (theme, font size, mute).
