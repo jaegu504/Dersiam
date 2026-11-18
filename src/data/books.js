@@ -18,6 +18,7 @@ import { menarData } from './menar.js';
 import { akaidData } from './akaid.js';
 import { maksudData } from './maksud.js';
 import { quduriMufassalData } from './quduriMufassal.js';
+import { fathulMeta } from './fathul/meta.js';
 
 export const booksMetadata = {
   quduri: {
@@ -109,6 +110,21 @@ export const booksMetadata = {
     authorTr: "İmâm-ı Âzam Ebû Hanîfe",
     authorId: "Al-Imam Al-A'zham Abu Hanifah",
     themeColor: "#0D9488"
+  },
+  fathul: {
+    id: "fathul",
+    titleTr: "Fethu'l-Muîn",
+    titleId: "Fathul Mu'in",
+    titleAr: "فتح المعين",
+    categoryTr: "Şâfiî Fıkhı",
+    categoryId: "Fikih Syafi'i",
+    descTr: "Zeynüddîn el-Melîbârî'nin Şâfiî fıkhına dair Kurretü'l-Ayn şerhi.",
+    descId: "Syarah Qurratul 'Ain karya Zainuddin al-Malibari, rujukan fikih madzhab Syafi'i.",
+    totalChapters: fathulMeta.totalChapters,
+    totalQuestions: fathulMeta.totalQuestions,
+    authorTr: "Zeynüddîn el-Melîbârî",
+    authorId: "Zainuddin al-Malibari",
+    themeColor: "#2F7A40"
   }
 };
 

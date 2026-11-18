@@ -153,7 +153,9 @@ export const dictionary = {
     bookAkaid: "Metn-i Akāid",
     descAkaid: "Necmeddîn en-Nesefî'nin Ehl-i Sünnet akîdesini özetleyen temel metni.",
     bookMaksud: "Kitâbü'l-Maksûd",
-    descMaksud: "Arapça sarf ve morfoloji ilmini, fiil bablarını ve i'lâl kaidelerini öğreten temel metin."
+    descMaksud: "Arapça sarf ve morfoloji ilmini, fiil bablarını ve i'lâl kaidelerini öğreten temel metin.",
+    fathulLoading: "Fethu'l-Muîn yükleniyor…",
+    fathulLoadError: "Fethu'l-Muîn yüklenemedi. Bağlantınızı kontrol edip tekrar deneyin."
   },
 
   id: {
@@ -305,6 +307,8 @@ export const dictionary = {
     bookAkaid: "Matn al-'Aqa'id",
     descAkaid: "Matan akidah Ahlus Sunnah wal Jama'ah ringkas karya Najmuddin an-Nasafi.",
     bookMaksud: "Kitab Al-Maqshud",
-    descMaksud: "Kitab induk ilmu sharaf dan morfologi bahasa Arab, bab bina', serta kaidah i'lal yang otoritatif."
+    descMaksud: "Kitab induk ilmu sharaf dan morfologi bahasa Arab, bab bina', serta kaidah i'lal yang otoritatif.",
+    fathulLoading: "Memuat Fathul Mu'in…",
+    fathulLoadError: "Fathul Mu'in gagal dimuat. Periksa koneksi lalu coba lagi."
   }
 };

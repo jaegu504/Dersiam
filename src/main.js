@@ -10,6 +10,8 @@ import { openSearchModal } from './components/searchModal.js';
 import { openSettingsModal } from './components/settingsModal.js';
 import { loadSettings, saveSettings } from './state/storage.js';
 import { setAudioMute } from './services/audio.js';
+import { dictionary } from './data/dictionary.js';
+import { loadFathul, isFathulLoaded } from './data/fathul/load.js';
 
 const SETTING_KEYS = ['isDarkMode', 'isAudioMuted', 'activeAlgorithm', 'activeLang', 'fontSize', 'activeSource'];
 
@@ -57,6 +59,7 @@ export function initApp(appRoot = document.getElementById('app'), appStore = sto
   const headerUnmount = renderHeader(headerMount, appStore);
 
   let currentViewUnmount = null;
+  let mountSeq = 0;
   let isPopstateNavigation = false;
 
   // Initialize browser history entry if needed
@@ -75,6 +78,34 @@ export function initApp(appRoot = document.getElementById('app'), appStore = sto
     if (typeof currentViewUnmount === 'function') {
       currentViewUnmount();
       currentViewUnmount = null;
+    }
+    const seq = ++mountSeq;
+
+    // Fathul Mu'in questions load lazily; resume and back-button can land here first
+    const { activeBook, activeLang } = appStore.getState();
+    if (activeBook === 'fathul' && ['study', 'exam', 'reader'].includes(currentView) && !isFathulLoaded()) {
+      const dict = dictionary[activeLang] || dictionary.tr;
+      viewMount.innerHTML = `
+        <div class="neu-card flex flex-col gap-4 items-center justify-center p-8 text-center my-8" role="status">
+          <p class="text-secondary">${dict.fathulLoading}</p>
+        </div>
+      `;
+      loadFathul().then(
+        () => { if (seq === mountSeq) mountView(currentView); },
+        () => {
+          if (seq !== mountSeq) return;
+          viewMount.innerHTML = `
+            <div class="neu-card flex flex-col gap-4 items-center justify-center p-8 text-center my-8" role="alert">
+              <p class="text-secondary">${dict.fathulLoadError}</p>
+              <button id="btn-back-home" class="neu-button neu-button-primary mt-2">${dict.homeBtn}</button>
+            </div>
+          `;
+          viewMount.querySelector('#btn-back-home')?.addEventListener('click', () => {
+            appStore.setState({ currentView: 'home' });
+          });
+        }
+      );
+      return;
     }
 
     if (currentView === 'home') {
