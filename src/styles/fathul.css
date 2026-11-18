@@ -1,0 +1,175 @@
+/* Fathul Mu'in: Cari Mas'alah view and full-page sheet.
+   Tokens only from neumorphism.css; marks match .result-snippet mark. */
+
+.fathul-view mark,
+.fathul-sheet mark {
+  background: var(--sun);
+  color: #2B2100;
+  border-radius: 4px;
+  padding: 0 2px;
+}
+
+/* ---------- Full-page sheet ---------- */
+.fathul-sheet {
+  max-width: 760px;
+}
+
+.fathul-sheet-heading h3 {
+  margin: 0;
+}
+
+.fathul-sheet-sub {
+  margin: 2px 0 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.fathul-sheet-body {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.fathul-label {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.35rem;
+}
+
+.fathul-matn {
+  background: var(--bg-surface-elevated);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+}
+
+.fathul-matn-line,
+.fathul-para,
+.fathul-footnote {
+  margin: 0 0 0.5rem;
+  text-align: right;
+  font-size: 1.2rem;
+  line-height: 2;
+}
+
+.fathul-matn-line {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.fathul-para {
+  color: var(--text-secondary);
+  text-align: justify;
+  text-align-last: right;
+}
+
+.fathul-para.is-ref {
+  color: var(--text-primary);
+  background: var(--sun-surface);
+  border-right: 4px solid var(--sun);
+  border-radius: 8px;
+  padding: 0.25rem 0.75rem;
+}
+
+.fathul-footnotes {
+  border-top: 2px dashed var(--border-subtle);
+  padding-top: 0.75rem;
+}
+
+.fathul-footnote {
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+.fathul-sheet.is-large .fathul-matn-line,
+.fathul-sheet.is-large .fathul-para {
+  font-size: 1.5rem;
+}
+
+.fathul-sheet.is-large .fathul-footnote {
+  font-size: 1.2rem;
+}
+
+.fathul-related h4 {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  margin: 0 0 0.5rem;
+}
+
+.fathul-related-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.fathul-related-item {
+  text-align: left;
+  background: var(--bg-surface-elevated);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.8rem;
+  min-height: 44px;
+  color: var(--accent-primary);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.fathul-related-item:hover,
+.fathul-related-item:focus-visible {
+  border-color: var(--accent-light);
+}
+
+.fathul-related-hlm {
+  color: var(--text-muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.fathul-sheet-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.75rem 1rem;
+}
+
+.fathul-sheet-tools .neu-button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.fathul-sheet-paging {
+  margin-left: auto;
+  display: inline-flex;
+  gap: 0.5rem;
+}
+
+.fathul-sheet-paging .neu-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+@media (max-width: 520px) {
+  .fathul-sheet-backdrop {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .fathul-sheet {
+    max-height: 92vh;
+    border-radius: 26px 26px 0 0;
+  }
+
+  .fathul-sheet-paging {
+    margin-left: 0;
+    width: 100%;
+    justify-content: space-between;
+  }
+}

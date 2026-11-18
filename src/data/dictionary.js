@@ -155,7 +155,16 @@ export const dictionary = {
     bookMaksud: "Kitâbü'l-Maksûd",
     descMaksud: "Arapça sarf ve morfoloji ilmini, fiil bablarını ve i'lâl kaidelerini öğreten temel metin.",
     fathulLoading: "Fethu'l-Muîn yükleniyor…",
-    fathulLoadError: "Fethu'l-Muîn yüklenemedi. Bağlantınızı kontrol edip tekrar deneyin."
+    fathulLoadError: "Fethu'l-Muîn yüklenemedi. Bağlantınızı kontrol edip tekrar deneyin.",
+    fathulMatn: "Metin",
+    fathulSyarah: "Şerh",
+    fathulFootnotes: "Dipnotlar",
+    fathulRelated: "Bu fasıldaki diğer konular",
+    fathulCopy: "İbareyi ve sayfayı kopyala",
+    fathulCopied: "Kopyalandı",
+    fathulFontSize: "Yazıyı büyüt",
+    fathulPrevPage: "Önceki sayfa",
+    fathulNextPage: "Sonraki sayfa"
   },
 
   id: {
@@ -309,6 +318,15 @@ export const dictionary = {
     bookMaksud: "Kitab Al-Maqshud",
     descMaksud: "Kitab induk ilmu sharaf dan morfologi bahasa Arab, bab bina', serta kaidah i'lal yang otoritatif.",
     fathulLoading: "Memuat Fathul Mu'in…",
-    fathulLoadError: "Fathul Mu'in gagal dimuat. Periksa koneksi lalu coba lagi."
+    fathulLoadError: "Fathul Mu'in gagal dimuat. Periksa koneksi lalu coba lagi.",
+    fathulMatn: "Matan",
+    fathulSyarah: "Syarah",
+    fathulFootnotes: "Catatan kaki",
+    fathulRelated: "Topik lain di fasal ini",
+    fathulCopy: "Salin ibarah + hlm",
+    fathulCopied: "Tersalin",
+    fathulFontSize: "Perbesar huruf",
+    fathulPrevPage: "Halaman sebelumnya",
+    fathulNextPage: "Halaman berikutnya"
   }
 };

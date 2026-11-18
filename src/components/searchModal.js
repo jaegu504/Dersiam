@@ -17,7 +17,7 @@ import { staggerIn, dialogIn } from '../services/motion.js';
  * @param {HTMLElement} element - Container modal element
  * @returns {Function} Cleanup function
  */
-function trapFocus(element) {
+export function trapFocus(element) {
   function handleFocus(e) {
     if (e.key !== 'Tab') return;
 

@@ -10,6 +10,7 @@ import { buildFathulIndex } from '../../services/fathulSearch.js';
 
 let promise = null;
 let loaded = false;
+let data = null;
 
 /**
  * @returns {Promise<{ corpus: object, questions: object[], index: object[] }>}
@@ -22,7 +23,8 @@ export function loadFathul() {
         const questions = questionsMod.default;
         booksData.fathul = questions;
         loaded = true;
-        return { corpus, questions, index: buildFathulIndex(corpus.topics) };
+        data = { corpus, questions, index: buildFathulIndex(corpus.topics) };
+        return data;
       })
       .catch((err) => {
         promise = null; // allow a retry after a network failure
@@ -30,6 +32,11 @@ export function loadFathul() {
       });
   }
   return promise;
+}
+
+/** @returns {{ corpus: object, questions: object[], index: object[] } | null} data once loaded */
+export function getFathulData() {
+  return data;
 }
 
 /** @returns {boolean} */

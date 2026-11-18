@@ -1,5 +1,6 @@
 import './styles/main.css';
 import './styles/taman.css';
+import './styles/fathul.css';
 import store from './state/store.js';
 import { renderHeader } from './components/header.js';
 import { renderHomeView } from './components/homeView.js';
