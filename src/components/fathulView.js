@@ -53,6 +53,7 @@ export function renderFathulView(container, store) {
           <span>${lang === 'id' ? chapter.nameId : chapter.nameAr} · <span dir="rtl" lang="ar">${fasal.nameAr}</span></span>
         </div>
         <p class="fathul-card-ringkas">${highlightText(topic.ringkas, query)}</p>
+        ${topic.ragu ? `<p class="fathul-ragu-note">${d.fathulRaguNote} (hlm ${topic.anchor.hlm}).</p>` : ''}
         <p class="fathul-card-ibarah font-arabic" dir="rtl" lang="ar">${highlightText(ibarahSnippet(topic.ibarah, arQuery), arQuery)}</p>
         <button type="button" class="neu-button neu-button-primary fathul-read" data-open-topic="${topic.id}">${d.fathulReadPage}</button>
       </article>

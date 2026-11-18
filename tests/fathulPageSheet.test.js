@@ -231,6 +231,19 @@ describe("Fathul Mu'in full page sheet", () => {
       for (const h of pages) for (const f of ['matn', 'syarah', 'footnotes']) expect(tr[h][f].length).toBe(corpus.pages[h][f].length);
     });
 
+    it('marks uncertain translation lines and sends the reader to the original kitab', async () => {
+      const { default: ragu } = await import('../src/data/fathul/ragu.json');
+      openFathulPage({ hlm: 13, lang: 'id' });
+      btn('translate').click();
+      await shown();
+      const lines = [...sheet().querySelectorAll('.fathul-syarah .fathul-tr')];
+      const flagged = lines.filter((l) => l.classList.contains('is-ragu'));
+      expect(flagged).toHaveLength(ragu['13'].syarah.length);
+      expect(lines[ragu['13'].syarah[0]].classList.contains('is-ragu')).toBe(true);
+      expect(flagged[0].textContent).toContain(dictionary.id.fathulRaguLine);
+      expect(sheet().querySelector('.fathul-matn .is-ragu')).toBeNull();
+    });
+
     it('translates footnotes too', async () => {
       openFathulPage({ hlm: 2, lang: 'id' });
       btn('translate').click();

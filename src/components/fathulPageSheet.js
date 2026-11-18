@@ -83,9 +83,10 @@ export function openFathulPage({ hlm, topicId = null, query = '', lang = 'id' })
   backdrop.appendChild(sheet);
   document.body.appendChild(backdrop);
 
-  function paragraphs(lines, cls, refIndex = -1, trLines = null) {
+  function paragraphs(lines, cls, refIndex = -1, trLines = null, raguLines = []) {
     return lines.map((line, i) => `<p class="${cls}${i === refIndex ? ' is-ref' : ''}" dir="rtl" lang="ar">${highlightText(line, query)}</p>${
-      trLines?.[i] ? `<p class="fathul-tr" dir="ltr" lang="id">${highlightText(trLines[i], '')}</p>` : ''}`).join('');
+      trLines?.[i] ? `<p class="fathul-tr${raguLines.includes(i) ? ' is-ragu' : ''}" dir="ltr" lang="id">${highlightText(trLines[i], '')}${
+        raguLines.includes(i) ? `<span class="fathul-ragu-tag">${dict.fathulRaguLine}</span>` : ''}</p>` : ''}`).join('');
   }
 
   function showTranslation() {
@@ -104,6 +105,7 @@ export function openFathulPage({ hlm, topicId = null, query = '', lang = 'id' })
     const refIndex = topic?.anchor && topic.anchor.hlm === state.hlm ? topic.anchor.para : -1;
     const chapterName = lang === 'id' ? fasal.chapter.nameId : fasal.chapter.nameAr;
     const tr = state.translate ? translation?.[String(state.hlm)] : null;
+    const ragu = getFathulData()?.ragu?.[String(state.hlm)] || {};
 
     const related = fasal.topicIds
       .filter((id) => id !== state.topicId)
@@ -122,9 +124,9 @@ export function openFathulPage({ hlm, topicId = null, query = '', lang = 'id' })
       </div>
       <div class="modal-body fathul-sheet-body">
         ${tr ? `<p class="fathul-tr-note">${dict.fathulTranslationNote}</p>` : ''}
-        ${page.matn.length ? `<section class="fathul-matn"><div class="fathul-label">${dict.fathulMatn}</div>${paragraphs(page.matn, 'fathul-matn-line font-arabic', -1, tr?.matn)}</section>` : ''}
-        <section class="fathul-syarah"><div class="fathul-label">${dict.fathulSyarah}</div>${paragraphs(page.syarah, 'fathul-para font-arabic', refIndex, tr?.syarah)}</section>
-        ${page.footnotes.length ? `<section class="fathul-footnotes"><div class="fathul-label">${dict.fathulFootnotes}</div>${paragraphs(page.footnotes, 'fathul-footnote font-arabic', -1, tr?.footnotes)}</section>` : ''}
+        ${page.matn.length ? `<section class="fathul-matn"><div class="fathul-label">${dict.fathulMatn}</div>${paragraphs(page.matn, 'fathul-matn-line font-arabic', -1, tr?.matn, ragu.matn)}</section>` : ''}
+        <section class="fathul-syarah"><div class="fathul-label">${dict.fathulSyarah}</div>${paragraphs(page.syarah, 'fathul-para font-arabic', refIndex, tr?.syarah, ragu.syarah)}</section>
+        ${page.footnotes.length ? `<section class="fathul-footnotes"><div class="fathul-label">${dict.fathulFootnotes}</div>${paragraphs(page.footnotes, 'fathul-footnote font-arabic', -1, tr?.footnotes, ragu.footnotes)}</section>` : ''}
         ${related ? `<section class="fathul-related"><h4>${dict.fathulRelated}</h4><div class="fathul-related-list">${related}</div></section>` : ''}
       </div>
       <div class="modal-footer fathul-sheet-tools">

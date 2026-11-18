@@ -199,3 +199,15 @@ describe("Fathul Mu'in view: language and routing", () => {
     app.viewUnmount();
   });
 });
+
+describe("Fathul Mu'in view: uncertain passages", () => {
+  it('an answer card whose passage is marked RAGU tells the reader to check the original kitab', async () => {
+    await mount();
+    await search('dua qullah tidak najis');
+    const card = cardFor('hlm 13 · cetak');
+    expect(card.querySelector('.fathul-ragu-note').textContent).toContain(d.fathulRaguNote);
+    const other = cardFor('hlm 70 · cetak 99');
+    if (other) expect(other.querySelector('.fathul-ragu-note')).toBeNull();
+  });
+});
+

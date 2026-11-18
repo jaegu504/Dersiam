@@ -109,6 +109,24 @@
   font-size: 1.1rem;
 }
 
+.fathul-tr.is-ragu {
+  border-left-color: var(--sun);
+}
+
+.fathul-ragu-tag,
+.fathul-ragu-note {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+.fathul-ragu-note {
+  border-left: 3px solid var(--sun);
+  padding-left: 0.5rem;
+}
+
 .fathul-tr-note {
   margin: 0 0 0.75rem;
   font-size: 0.8rem;

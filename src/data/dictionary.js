@@ -177,7 +177,9 @@ export const dictionary = {
     fathulPages: "sayfa",
     fathulTopics: "konu",
     fathulTranslation: "Endonezce çeviri",
-    fathulTranslationNote: "serbest çeviri (Endonezce), Arapça metne başvurun"
+    fathulTranslationNote: "serbest çeviri (Endonezce), Arapça metne başvurun",
+    fathulRaguLine: "Bu satırın okunuşu kesin değil, asıl kitaba bakın.",
+    fathulRaguNote: "Not: Bu cevabın dayandığı ibarenin okunuşu kesin değil (muhtemel baskı hatası). Asıl kitaba bakın"
   },
 
   id: {
@@ -353,6 +355,8 @@ export const dictionary = {
     fathulPages: "halaman",
     fathulTopics: "topik",
     fathulTranslation: "Terjemahan",
-    fathulTranslationNote: "terjemahan bebas, rujuk teks Arab"
+    fathulTranslationNote: "terjemahan bebas, rujuk teks Arab",
+    fathulRaguLine: "Bacaan baris ini belum pasti, rujuk kitab aslinya.",
+    fathulRaguNote: "Catatan: bacaan ibarah yang menjadi dasar jawaban ini belum pasti (kemungkinan salah cetak). Rujuk kitab aslinya"
   }
 };
