@@ -106,3 +106,37 @@ describe("Fathul Mu'in question items", async () => {
     }
   });
 });
+
+describe('question integrity guard', async () => {
+  const { execFileSync } = await import('node:child_process');
+  const { mkdtempSync, writeFileSync } = await import('node:fs');
+  const { tmpdir } = await import('node:os');
+  const { join } = await import('node:path');
+  const { default: questions } = await import('../src/data/fathul/questions.json');
+  const { default: sample } = await import('../scripts/fathul/questions/sample.json');
+
+  it('question ids are stable hashes, unique, independent of topic position', () => {
+    for (const q of questions) expect(q.id).toMatch(/^fathul-[0-9a-f]{10}$/);
+    expect(new Set(questions.map((q) => q.id)).size).toBe(questions.length);
+  });
+
+  it('authored rows record the hlm and Arabic title of their topic', () => {
+    const byId = Object.fromEntries(corpus.topics.map((t) => [t.id, t]));
+    for (const row of sample) {
+      expect(row.hlm).toBe(byId[row.topicId].hlm);
+      expect(row.titleAr).toBe(byId[row.topicId].titleAr);
+    }
+  });
+
+  it('the exporter refuses a question whose topic no longer matches, and writes nothing', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'fathul-q-'));
+    const bad = [{ ...sample[0], hlm: sample[0].hlm + 1 }];
+    writeFileSync(join(dir, 'bad.json'), JSON.stringify(bad));
+    let err;
+    try {
+      execFileSync('python3', ['-I', 'scripts/build_fathul_data.py', '--source', '/Users/sp/Documents/Fathul Muin', '--questions', '--questions-dir', dir, '--dry-run'], { stdio: 'pipe' });
+    } catch (e) { err = e; }
+    expect(err).toBeDefined();
+    expect(String(err.stderr)).toContain('no longer matches');
+  });
+});

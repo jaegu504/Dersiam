@@ -16,6 +16,7 @@ Usage (from the repo root):
 """
 import argparse
 import glob
+import hashlib
 import json
 import os
 import re
@@ -204,13 +205,25 @@ def cloze_word(topic):
     return max(first_line, key=lambda w: len(normalize_arabic(w)))
 
 
-def build_questions(topics, chapters):
+def question_id(topic):
+    """Stable across map edits that only shift topic positions."""
+    key = f"{topic['fasalId']}|{topic['titleAr']}|{topic['hlm']}".encode("utf-8")
+    return "fathul-" + hashlib.sha1(key).hexdigest()[:10]
+
+
+def build_questions(topics, chapters, questions_dir=QUESTIONS_DIR):
+    by_topic = {t["id"]: t for t in topics}
     authored = {}
-    for path in sorted(glob.glob(os.path.join(QUESTIONS_DIR, "*.json"))):
+    for path in sorted(glob.glob(os.path.join(questions_dir, "*.json"))):
         for row in json.load(open(path, encoding="utf-8")):
-            if row["topicId"] in authored:
-                sys.exit(f"duplicate question for {row['topicId']} in {path}")
-            authored[row["topicId"]] = row["question"].strip()
+            tid = row["topicId"]
+            if tid in authored:
+                sys.exit(f"duplicate question for {tid} in {path}")
+            t = by_topic.get(tid)
+            # rows pin hlm + titleAr so a shifted map can never pair a question with another ruling
+            if not t or t["hlm"] != row.get("hlm") or t["titleAr"] != row.get("titleAr"):
+                sys.exit(f"question for {tid} in {path} no longer matches its topic (hlm/titleAr); re-check the map")
+            authored[tid] = row["question"].strip()
     by_chapter = {c["id"]: c for c in chapters}
     items = []
     for n, t in enumerate(topics, 1):
@@ -222,15 +235,15 @@ def build_questions(topics, chapters):
         answer = f"{t['ringkas']}<br><span lang='ar' dir='rtl'>{ibarah_html}</span><br><small>Fathul Mu'in hlm {t['hlm']} · cetak {t['cetak']}</small>"
         cloze = cloze_word(t)
         items.append({
-            "id": f"fathul-{n:04d}", "bookKey": "fathul", "chapterId": t["chapterId"],
+            "id": question_id(t), "bookKey": "fathul", "chapterId": t["chapterId"],
             "chapterNameTr": c["nameAr"], "chapterNameId": c["nameId"], "originalNumber": n,
             "question_id": q, "answer_id": answer, "question_tr": q, "answer_tr": answer,
             "clozeKeyWord_id": cloze, "clozeKeyWord_tr": cloze,
             "keywords": ",".join(t["keywords"]), "topicId": t["id"], "hlm": t["hlm"],
         })
-    unknown = set(authored) - {t["id"] for t in topics}
-    if unknown:
-        sys.exit(f"questions for unknown topics: {sorted(unknown)[:5]}")
+    ids = [q["id"] for q in items]
+    if len(ids) != len(set(ids)):
+        sys.exit("question id collision; extend the hash key")
     return items
 
 
@@ -238,6 +251,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--source", required=True)
     ap.add_argument("--questions", action="store_true")
+    ap.add_argument("--questions-dir", default=QUESTIONS_DIR)
+    ap.add_argument("--dry-run", action="store_true", help="validate only, write nothing")
     args = ap.parse_args()
 
     pages = parse_pages(os.path.join(args.source, "fathul-muin.txt"))
@@ -246,14 +261,19 @@ def main():
     if missing:
         sys.exit(f"topics missing hlm/ringkas/ibarah: {missing[:10]}")
 
+    # validate everything before writing anything
+    questions = build_questions(topics, chapters, args.questions_dir) if args.questions else None
+    if args.dry_run:
+        print(f"dry run ok: topics {len(topics)}, questions {len(questions or [])}")
+        return
+
     os.makedirs(OUT_DIR, exist_ok=True)
     os.makedirs(os.path.dirname(REPORT), exist_ok=True)
     corpus = {"chapters": chapters, "topics": topics, "pages": {str(h): pages[h] for h in sorted(pages)}}
     json.dump(corpus, open(os.path.join(OUT_DIR, "corpus.json"), "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
 
     qpath = os.path.join(OUT_DIR, "questions.json")
-    if args.questions:
-        questions = build_questions(topics, chapters)
+    if questions is not None:
         json.dump(questions, open(qpath, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     total_questions = len(json.load(open(qpath, encoding="utf-8"))) if os.path.exists(qpath) else 0
 
