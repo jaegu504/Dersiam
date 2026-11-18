@@ -176,15 +176,15 @@ describe('Task 13: 100% Comprehensive Bilingual UI Audit & E2E Verification', ()
       const heroSubtitle = container.querySelector('.hero-subtitle');
       const heroBadge = container.querySelector('.hero-badge');
 
-      expect(heroTitle.textContent.trim()).toBe('Enam Kitab Klasik Utama');
+      expect(heroTitle.textContent.trim()).toBe('Tujuh Kitab Klasik Utama');
       expect(heroSubtitle.textContent.trim()).toBe(
         "Selamat datang di portal hafalan, muthala'ah, dan ujian madrasah. Silakan pilih bidang ilmu dan kitab yang ingin dipelajari."
       );
-      expect(heroBadge.textContent.trim()).toBe("Sistem Muthala'ah dan Ujian 6 Kitab Utama");
+      expect(heroBadge.textContent.trim()).toBe("Sistem Muthala'ah dan Ujian 7 Kitab Utama");
 
-      // Grid with 6 books
+      // Grid with 7 books
       const cards = container.querySelectorAll('.book-card');
-      expect(cards.length).toBe(6);
+      expect(cards.length).toBe(7);
 
       const expectedBooks = [
         { key: 'quduri', title: 'Mukhtashar al-Quduri', cat: 'Fikih', author: 'Abul Hasan al-Quduri' },
@@ -192,7 +192,8 @@ describe('Task 13: 100% Comprehensive Bilingual UI Audit & E2E Verification', ()
         { key: 'kafiye', title: 'Al-Kafiyah', cat: 'Nahwu', author: 'Ibnu al-Hajib' },
         { key: 'menar', title: 'Manar al-Anwar', cat: 'Ushul Fiqh', author: 'Hafizhud Din an-Nasafi' },
         { key: 'akaid', title: "Matn al-'Aqa'id", cat: 'Akidah & Kalam', author: 'Najmuddin Umar an-Nasafi' },
-        { key: 'maksud', title: 'Kitab Al-Maqshud', cat: 'Sharaf', author: "Al-Imam Al-A'zham Abu Hanifah" }
+        { key: 'maksud', title: 'Kitab Al-Maqshud', cat: 'Sharaf', author: "Al-Imam Al-A'zham Abu Hanifah" },
+        { key: 'fathul', title: "Fathul Mu'in", cat: "Fikih Syafi'i", author: 'Zainuddin al-Malibari' }
       ];
 
       expectedBooks.forEach(({ key, title, cat, author }) => {

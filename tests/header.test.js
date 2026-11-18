@@ -158,13 +158,13 @@ describe('HomeView Landing Page Component', () => {
     });
   });
 
-  it('renders hero section and all 6 kitab cards with zero emojis', () => {
+  it('renders hero section and all 7 kitab cards with zero emojis', () => {
     renderHomeView(container, store);
 
     const cards = container.querySelectorAll('.book-card');
-    expect(cards.length).toBe(6);
+    expect(cards.length).toBe(7);
 
-    const bookKeys = ['quduri', 'talhis', 'kafiye', 'menar', 'akaid', 'maksud'];
+    const bookKeys = ['quduri', 'talhis', 'kafiye', 'menar', 'akaid', 'maksud', 'fathul'];
     bookKeys.forEach(key => {
       const card = container.querySelector(`[data-book-id="${key}"]`);
       expect(card).toBeTruthy();
@@ -183,11 +183,11 @@ describe('HomeView Landing Page Component', () => {
     renderHomeView(container, store);
 
     const heroTitle = container.querySelector('.hero-title');
-    expect(heroTitle.textContent).toContain('Altı Temel Klasik Kitap');
+    expect(heroTitle.textContent).toContain('Yedi Temel Klasik Kitap');
 
     store.setState({ activeLang: 'id' });
 
-    expect(heroTitle.textContent).toContain('Enam Kitab Klasik Utama');
+    expect(heroTitle.textContent).toContain('Tujuh Kitab Klasik Utama');
     const quduriCard = container.querySelector('[data-book-id="quduri"]');
     expect(quduriCard.querySelector('.book-title').textContent).toContain('Mukhtashar al-Quduri');
     expect(quduriCard.querySelector('.category-badge').textContent).toContain('Fikih');
@@ -238,7 +238,7 @@ describe('initApp Application Entrypoint', () => {
     expect(root.querySelector('#view-mount')).toBeTruthy();
     expect(root.querySelector('#header-bar')).toBeTruthy();
     expect(root.querySelector('.home-view')).toBeTruthy();
-    expect(root.querySelectorAll('.book-card').length).toBe(6);
+    expect(root.querySelectorAll('.book-card').length).toBe(7);
 
     // Navigate to study
     customStore.setState({ currentView: 'study', activeBook: 'quduri' });

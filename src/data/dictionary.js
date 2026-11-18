@@ -7,7 +7,7 @@ export const dictionary = {
   tr: {
     // Brand & Header
     brandTitle: "Klasik Medrese Portalı",
-    brandSubtitle: "6 Temel Eserde Mütalaa ve İmtihan",
+    brandSubtitle: "7 Temel Eserde Mütalaa ve İmtihan",
     homeNav: "Ana Sayfa",
     homeBtn: "Ana Sayfa",
     searchNav: "Genel Arama",
@@ -22,7 +22,7 @@ export const dictionary = {
     langId: "Endonezce",
 
     // Home Screen
-    welcomeTitle: "Altı Temel Klasik Kitap",
+    welcomeTitle: "Yedi Temel Klasik Kitap",
     welcomeSubtitle: "Ezber, mütalaa ve imtihan portalına hoş geldiniz. Çalışmak istediğiniz kitabı seçin.",
     selectBook: "Kitap Seçimi",
     totalQuestions: "Toplam Soru",
@@ -181,7 +181,7 @@ export const dictionary = {
   id: {
     // Brand & Header
     brandTitle: "Portal Madrasah Klasik",
-    brandSubtitle: "Sistem Muthala'ah dan Ujian 6 Kitab Utama",
+    brandSubtitle: "Sistem Muthala'ah dan Ujian 7 Kitab Utama",
     homeNav: "Beranda",
     homeBtn: "Beranda",
     searchNav: "Pencarian Global",
@@ -196,7 +196,7 @@ export const dictionary = {
     langId: "Bahasa Indonesia",
 
     // Home Screen
-    welcomeTitle: "Enam Kitab Klasik Utama",
+    welcomeTitle: "Tujuh Kitab Klasik Utama",
     welcomeSubtitle: "Selamat datang di portal hafalan, muthala'ah, dan ujian madrasah. Silakan pilih bidang ilmu dan kitab yang ingin dipelajari.",
     selectBook: "Pilih Kitab",
     totalQuestions: "Total Soal",

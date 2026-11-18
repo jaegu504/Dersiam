@@ -12,7 +12,7 @@ import { getIconSvg } from './icons.js';
 import { loadLastSession } from '../state/storage.js';
 import { staggerIn } from '../services/motion.js';
 
-const BOOK_KEYS = ['quduri', 'talhis', 'kafiye', 'menar', 'akaid', 'maksud'];
+const BOOK_KEYS = ['quduri', 'talhis', 'kafiye', 'menar', 'akaid', 'maksud', 'fathul'];
 
 /** First letter of the book's distinctive word: "مختصر القدوري" gives "ق". */
 function bookGlyph(titleAr) {
@@ -159,6 +159,11 @@ export function renderHomeView(container, store) {
     const handleSelect = (e) => {
       e.preventDefault();
       playPureSfx('start');
+      // Fathul Mu'in opens on its search page; the other books open their flashcards
+      if (bookKey === 'fathul') {
+        store.setState({ activeBook: bookKey, currentView: 'fathul' });
+        return;
+      }
       store.setState({
         activeBook: bookKey,
         currentView: 'study',
