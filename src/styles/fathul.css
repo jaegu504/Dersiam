@@ -173,3 +173,212 @@
     justify-content: space-between;
   }
 }
+
+/* ---------- Cari Mas'alah view ---------- */
+.fathul-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem;
+}
+
+.fathul-hero-ar {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+.fathul-hero-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.fathul-hero-meta {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.fathul-mazhab {
+  display: inline-block;
+  background: var(--sun-surface);
+  color: var(--sun-ink);
+  border-radius: 999px;
+  padding: 0.1rem 0.6rem;
+  font-weight: 700;
+}
+
+.fathul-search {
+  position: relative;
+}
+
+.fathul-search svg {
+  position: absolute;
+  left: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.fathul-search .neu-input {
+  padding-left: 2.6rem;
+}
+
+.fathul-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.fathul-chip {
+  min-height: 44px;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  background: var(--bg-surface);
+  border: 2px solid var(--border-subtle);
+  box-shadow: var(--neu-raised-sm);
+  color: var(--text-primary);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.fathul-chip:hover,
+.fathul-chip:focus-visible {
+  border-color: var(--accent-light);
+}
+
+.fathul-ways-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.fathul-ways-row .neu-button,
+.fathul-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+}
+
+.fathul-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.fathul-count,
+.fathul-empty {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.fathul-results {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.fathul-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem 1.1rem;
+}
+
+.fathul-card-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.fathul-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.75rem;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.fathul-hlm {
+  background: var(--accent-surface);
+  color: var(--accent-edge);
+  border-radius: 999px;
+  padding: 0.1rem 0.6rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.fathul-card-ringkas {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.fathul-card-ibarah {
+  margin: 0;
+  font-size: 1.2rem;
+  line-height: 1.95;
+  text-align: right;
+  color: var(--text-primary);
+}
+
+.fathul-read {
+  align-self: flex-start;
+  min-height: 44px;
+}
+
+.fathul-panel-title {
+  margin: 0.25rem 0;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.fathul-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fathul-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 48px;
+  padding: 0.6rem 0.9rem;
+  text-align: left;
+  background: var(--bg-surface);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--neu-raised-sm);
+  color: var(--text-primary);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.fathul-list-item:hover,
+.fathul-list-item:focus-visible {
+  border-color: var(--accent-light);
+}
+
+.fathul-list-meta {
+  color: var(--text-muted);
+  font-weight: 500;
+  white-space: nowrap;
+  font-size: 0.85rem;
+}
+
+.fathul-list-ar {
+  font-size: 1.1rem;
+}

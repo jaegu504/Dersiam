@@ -164,7 +164,18 @@ export const dictionary = {
     fathulCopied: "Kopyalandı",
     fathulFontSize: "Yazıyı büyüt",
     fathulPrevPage: "Önceki sayfa",
-    fathulNextPage: "Sonraki sayfa"
+    fathulNextPage: "Sonraki sayfa",
+    fathulSearchPlaceholder: "Mesele ara… (Endonezce veya Arapça: najis, النية)",
+    fathulOtherWays: "Diğer yollar",
+    fathulBrowse: "Bablara göz at",
+    fathulPractice: "Soru çalış",
+    fathulReadPage: "Sayfanın tamamını oku",
+    fathulResults: "{n} konu bulundu",
+    fathulNoResults: "Bu kelimeyle eşleşen konu yok. Başka bir kelime veya Arapçasını deneyin.",
+    fathulMazhab: "Şâfiî Mezhebi",
+    fathulBack: "Geri",
+    fathulPages: "sayfa",
+    fathulTopics: "konu"
   },
 
   id: {
@@ -327,6 +338,17 @@ export const dictionary = {
     fathulCopied: "Tersalin",
     fathulFontSize: "Perbesar huruf",
     fathulPrevPage: "Halaman sebelumnya",
-    fathulNextPage: "Halaman berikutnya"
+    fathulNextPage: "Halaman berikutnya",
+    fathulSearchPlaceholder: "Cari mas'alah… (contoh: qashar, najis, wali nikah)",
+    fathulOtherWays: "Cara lain",
+    fathulBrowse: "Telusur Bab",
+    fathulPractice: "Latihan Soal",
+    fathulReadPage: "Baca halaman lengkap",
+    fathulResults: "{n} topik ditemukan",
+    fathulNoResults: "Tidak ada topik yang cocok. Coba kata lain atau padanan Arabnya.",
+    fathulMazhab: "Mazhab Syafi'i",
+    fathulBack: "Kembali",
+    fathulPages: "halaman",
+    fathulTopics: "topik"
   }
 };

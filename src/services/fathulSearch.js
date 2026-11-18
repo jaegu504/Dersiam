@@ -192,7 +192,8 @@ function matchRanges(text, query) {
     while ((at = norm.indexOf(tok.text, from)) !== -1) {
       const start = map[at];
       let end = map[at + tok.text.length - 1] + 1;
-      while (end < text.length && HARAKAT.test(text[end])) end++;
+      // the normalizer drops harakat, tatweel and hamza; keep them inside the mark
+      while (end < text.length && (HARAKAT.test(text[end]) || text[end] === 'ء')) end++;
       ranges.push([start, end]);
       from = at + tok.text.length;
     }
@@ -255,4 +256,26 @@ export function ibarahSnippet(text, query, maxLen = 180) {
     if (sp > start && (!first || sp >= first[1])) end = sp;
   }
   return (start > 0 ? '…' : '') + flat.slice(start, end).trim() + (end < flat.length ? '…' : '');
+}
+
+const TITLE_STOPWORDS = new Set(['علي', 'الي', 'التي', 'الذي', 'غير', 'بين', 'عند', 'بعد', 'قبل'].map((w) => normalizeArabic(w)));
+
+/**
+ * Words to highlight for one topic. A Latin (Indonesian) query never occurs in
+ * the Arabic text, so the topic's Arabic title terms are added to it.
+ *
+ * @param {{ titleAr: string }} topic
+ * @param {string} query
+ * @returns {string}
+ */
+export function highlightQueryFor(topic, query) {
+  const q = (query || '').trim();
+  if (!q || isArabicText(q)) return q;
+  const terms = (topic?.titleAr || '')
+    .split(/\s+/)
+    .filter((w) => {
+      const n = normalizeArabic(w);
+      return n.length >= 3 && !n.includes(' ') && !TITLE_STOPWORDS.has(n);
+    });
+  return [q, ...terms].join(' ');
 }

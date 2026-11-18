@@ -7,6 +7,7 @@ import { renderHomeView } from './components/homeView.js';
 import { renderStudyView } from './components/studyView.js';
 import { renderExamView } from './components/examView.js';
 import { renderReaderView } from './components/readerView.js';
+import { renderFathulView } from './components/fathulView.js';
 import { openSearchModal } from './components/searchModal.js';
 import { openSettingsModal } from './components/settingsModal.js';
 import { loadSettings, saveSettings } from './state/storage.js';
@@ -117,6 +118,8 @@ export function initApp(appRoot = document.getElementById('app'), appStore = sto
       currentViewUnmount = renderExamView(viewMount, appStore);
     } else if (currentView === 'reader') {
       currentViewUnmount = renderReaderView(viewMount, appStore);
+    } else if (currentView === 'fathul') {
+      currentViewUnmount = renderFathulView(viewMount, appStore);
     } else {
       // Placeholder for next stages (study, exam, reader)
       const state = appStore.getState();

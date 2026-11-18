@@ -6,7 +6,8 @@ import {
   searchFathul,
   highlightText,
   ibarahSnippet,
-  normalizeWithMap
+  normalizeWithMap,
+  highlightQueryFor
 } from '../src/services/fathulSearch.js';
 
 const idx = buildFathulIndex(corpus.topics);
@@ -87,6 +88,11 @@ describe('highlightText', () => {
     expect(highlightText('مَعَ بَسْمَلَةٍ', 'بسملة')).toBe('مَعَ <mark>بَسْمَلَةٍ</mark>');
   });
 
+  it('keeps a trailing hamza inside the mark', () => {
+    expect(highlightText('في الوضوء وغيره', 'الوضوء')).toBe('في <mark>الوضوء</mark> وغيره');
+    expect(highlightText('في الوُضُوءِ', 'وضوء')).toBe('في ال<mark>وُضُوءِ</mark>');
+  });
+
   it('marks a substring inside a longer Arabic word', () => {
     expect(highlightText('مع قراءة البسملة فإنها', 'بسملة')).toBe('مع قراءة ال<mark>بسملة</mark> فإنها');
   });
@@ -158,5 +164,18 @@ describe('ibarahSnippet', () => {
 
   it('joins ibarah lines with spaces', () => {
     expect(ibarahSnippet('سطر أول\nسطر ثان', 'ثان')).toBe('سطر أول سطر ثان');
+  });
+});
+
+describe('highlightQueryFor', () => {
+  const topic = { titleAr: 'التسمية في الوضوء' };
+  it('adds the Arabic title terms to a Latin query, skipping particles', () => {
+    expect(highlightQueryFor(topic, 'basmalah wudhu')).toBe('basmalah wudhu التسمية الوضوء');
+  });
+  it('keeps an Arabic query as typed', () => {
+    expect(highlightQueryFor(topic, 'بسملة')).toBe('بسملة');
+  });
+  it('returns an empty string for an empty query', () => {
+    expect(highlightQueryFor(topic, '  ')).toBe('');
   });
 });
