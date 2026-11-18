@@ -191,10 +191,25 @@ def arabic_words(text):
     return [w.strip("،؛؟٪٫٬«»") for w in ARABIC_WORD.findall(text) if w.strip("،؛؟٪٫٬«»")]
 
 
-def cloze_word(topic):
+ARABIC_LETTER = re.compile(r"[\u0621-\u064A\u064B-\u065F\u0670\u0671-\u06D3]")
+
+
+def whole_word_only(word, text):
+    """True if every occurrence of word in text stands alone: exam mode masks every occurrence."""
+    at = text.find(word)
+    while at != -1:
+        before = text[at - 1] if at > 0 else " "
+        after = text[at + len(word)] if at + len(word) < len(text) else " "
+        if ARABIC_LETTER.match(before) or ARABIC_LETTER.match(after):
+            return False
+        at = text.find(word, at + len(word))
+    return True
+
+
+def cloze_word(topic, answer):
     def usable(w):
         n = normalize_arabic(w)
-        return len(n) >= 3 and n not in CLOZE_STOP and not n.isdigit()
+        return len(n) >= 3 and n not in CLOZE_STOP and not n.isdigit() and whole_word_only(w, answer)
 
     title_words = {normalize_arabic(w) for w in arabic_words(topic["titleAr"])}
     words = [w for w in arabic_words(topic["ibarah"]) if usable(w)]
@@ -202,6 +217,8 @@ def cloze_word(topic):
         if normalize_arabic(w) in title_words:
             return w
     first_line = [w for w in arabic_words(topic["ibarah"].split("\n")[0]) if usable(w)] or words
+    if not first_line:
+        sys.exit(f"no whole-word cloze candidate for {topic['id']}")
     return max(first_line, key=lambda w: len(normalize_arabic(w)))
 
 
@@ -233,7 +250,7 @@ def build_questions(topics, chapters, questions_dir=QUESTIONS_DIR):
         c = by_chapter[t["chapterId"]]
         ibarah_html = t["ibarah"].replace("\n", "<br>")
         answer = f"{t['ringkas']}<br><span lang='ar' dir='rtl'>{ibarah_html}</span><br><small>Fathul Mu'in hlm {t['hlm']} · cetak {t['cetak']}</small>"
-        cloze = cloze_word(t)
+        cloze = cloze_word(t, answer)
         items.append({
             "id": question_id(t), "bookKey": "fathul", "chapterId": t["chapterId"],
             "chapterNameTr": c["nameAr"], "chapterNameId": c["nameId"], "originalNumber": n,

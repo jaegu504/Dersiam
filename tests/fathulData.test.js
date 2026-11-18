@@ -96,6 +96,21 @@ describe("Fathul Mu'in question items", async () => {
     expect(new Set(questions.map((q) => q.topicId)).size).toBe(questions.length);
   });
 
+  it('the cloze word only ever occurs as a whole word in its answer', () => {
+    const letter = /[\u0621-\u064A\u064B-\u065F\u0670\u0671-\u06D3]/;
+    for (const q of questions) {
+      const w = q.clozeKeyWord_id;
+      let at = q.answer_id.indexOf(w);
+      expect(at, q.id).toBeGreaterThanOrEqual(0);
+      while (at !== -1) {
+        const before = q.answer_id[at - 1] || ' ';
+        const after = q.answer_id[at + w.length] || ' ';
+        expect(letter.test(before) || letter.test(after), `${q.id} ${w}`).toBe(false);
+        at = q.answer_id.indexOf(w, at + w.length);
+      }
+    }
+  });
+
   it('answers carry the topic ringkas and ibarah of the same topic', () => {
     const byId = Object.fromEntries(corpus.topics.map((t) => [t.id, t]));
     for (const q of questions) {
