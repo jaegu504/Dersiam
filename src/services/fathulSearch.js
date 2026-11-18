@@ -26,6 +26,14 @@ const LATIN_FOLD = {
 const LATIN_DROP = /['’‘`-]/;
 
 /**
+ * normalizeLatin plus sh -> s and zh -> z. The map spells both "shalat" and
+ * "salat", "zhuhur" and "zuhur"; folding here keeps the six other books untouched.
+ */
+function latinNorm(text) {
+  return normalizeLatin(text).replace(/sh/g, 's').replace(/zh/g, 'z');
+}
+
+/**
  * Normalize like normalizeArabic / normalizeLatin, keeping for every output
  * character the index of the original character it came from.
  *
@@ -56,8 +64,8 @@ export function normalizeWithMap(text, script) {
         seq.push([ch, i]);
       }
     }
-    // dh -> d, th -> t, dz -> z, applied in that order like normalizeLatin
-    for (const [a, b, out] of [['d', 'h', 'd'], ['t', 'h', 't'], ['d', 'z', 'z']]) {
+    // dh -> d, th -> t, dz -> z like normalizeLatin, then the fathul-only sh -> s, zh -> z
+    for (const [a, b, out] of [['d', 'h', 'd'], ['t', 'h', 't'], ['d', 'z', 'z'], ['s', 'h', 's'], ['z', 'h', 'z']]) {
       const next = [];
       for (let k = 0; k < seq.length; k++) {
         if (seq[k][0] === a && seq[k + 1]?.[0] === b) {
@@ -103,7 +111,7 @@ function queryTokens(query) {
   for (const raw of query.split(/\s+/)) {
     if (!raw) continue;
     const script = isArabicText(raw) ? 'ar' : 'lat';
-    const norm = script === 'ar' ? normalizeArabic(raw) : normalizeLatin(raw);
+    const norm = script === 'ar' ? normalizeArabic(raw) : latinNorm(raw);
     for (const text of norm.split(' ')) {
       const key = `${script}:${text}`;
       if (text.length >= MIN_TOKEN && !seen.has(key)) {
@@ -127,9 +135,9 @@ export function buildFathulIndex(topics = []) {
     return {
       topic,
       fields: {
-        title: { lat: normalizeLatin(topic.titleId), ar: normalizeArabic(topic.titleAr) },
-        keywords: { lat: normalizeLatin(keywords), ar: normalizeArabic(keywords) },
-        ringkas: { lat: normalizeLatin(topic.ringkas), ar: normalizeArabic(topic.ringkas) },
+        title: { lat: latinNorm(topic.titleId), ar: normalizeArabic(topic.titleAr) },
+        keywords: { lat: latinNorm(keywords), ar: normalizeArabic(keywords) },
+        ringkas: { lat: latinNorm(topic.ringkas), ar: normalizeArabic(topic.ringkas) },
         ibarah: { lat: '', ar: normalizeArabic(topic.ibarah) }
       }
     };

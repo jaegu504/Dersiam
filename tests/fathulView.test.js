@@ -66,6 +66,15 @@ describe("Fathul Mu'in view: entry", () => {
 });
 
 describe("Fathul Mu'in view: search results", () => {
+  it('every example chip finds at least one topic', async () => {
+    await mount();
+    for (const chip of [...container.querySelectorAll('[data-chip]')]) {
+      chip.click();
+      await wait(0);
+      expect(container.querySelectorAll('.fathul-card').length, chip.dataset.chip).toBeGreaterThan(0);
+    }
+  });
+
   it('a chip searches and renders highlighted cards with page badge', async () => {
     await mount();
     container.querySelector('[data-chip="basmalah"]').click();

@@ -20,7 +20,8 @@ describe('normalizeWithMap', () => {
         expect(normalizeWithMap(text, 'ar').norm).toBe(normalizeArabic(text));
       }
       for (const text of [t.titleId, t.ringkas]) {
-        expect(normalizeWithMap(text, 'lat').norm).toBe(normalizeLatin(text));
+        // fathul search folds sh->s and zh->z on top of normalizeLatin (map spells both shalat and salat)
+        expect(normalizeWithMap(text, 'lat').norm).toBe(normalizeLatin(text).replace(/sh/g, 's').replace(/zh/g, 'z'));
       }
     }
   });
@@ -60,6 +61,15 @@ describe('searchFathul', () => {
   it('accepts Indonesian spelling variants the normalizer folds (shalat / salat, wudhu / wudu)', () => {
     expect(searchFathul(idx, 'salat jumat').length).toBeGreaterThan(0);
     expect(topHlm('wudu', 10)).toEqual(topHlm('wudhu', 10));
+  });
+
+  it('treats shalat / salat and zhuhur / zuhur as the same word', () => {
+    const ids = (q) => searchFathul(idx, q, 5000).map((r) => r.topic.id).sort();
+    expect(ids('shalat')).toEqual(ids('salat'));
+    expect(ids('shalat').length).toBeGreaterThan(139);
+    expect(ids('zhuhur')).toEqual(ids('zuhur'));
+    expect(highlightText('Shalat jamak', 'salat')).toBe('<mark>Shalat</mark> jamak');
+    expect(highlightText('salat jamak', 'shalat')).toBe('<mark>salat</mark> jamak');
   });
 
   it('ignores too-short or symbol-only queries', () => {
