@@ -167,19 +167,34 @@ export function openFathulPage({ hlm, topicId = null, query = '', lang = 'id' })
     if (e.key === 'Escape') close();
   }
 
+  // The sheet owns one history entry: the phone back gesture closes it instead of leaving the book
+  let ownsHistoryEntry = false;
+  function onPopState() {
+    ownsHistoryEntry = false;
+    close();
+  }
+
   let cleanupFocus = () => {};
   function close() {
     if (!backdrop.parentNode) return;
     cleanupFocus();
     window.removeEventListener('keydown', onKeyDown);
+    window.removeEventListener('popstate', onPopState);
     backdrop.removeEventListener('click', onClick);
     backdrop.parentNode.removeChild(backdrop);
+    if (ownsHistoryEntry && history.state?.fathulSheet) history.back();
+    ownsHistoryEntry = false;
     if (opener && typeof opener.focus === 'function' && document.contains(opener)) opener.focus();
   }
 
   render();
   backdrop.addEventListener('click', onClick);
   window.addEventListener('keydown', onKeyDown);
+  if (typeof history !== 'undefined' && typeof history.pushState === 'function') {
+    history.pushState({ ...(history.state || {}), fathulSheet: true }, '');
+    ownsHistoryEntry = true;
+    window.addEventListener('popstate', onPopState);
+  }
   cleanupFocus = trapFocus(sheet);
   playPureSfx('open');
   dialogIn(backdrop, sheet);

@@ -153,10 +153,11 @@ export function renderFathulView(container, store) {
     timer = setTimeout(() => runSearch(q), SEARCH_DELAY);
   }
 
+  let closeSheet = null;
   function openTopic(id) {
     const data = getFathulData();
     const topic = data.corpus.topics.find((t) => t.id === id);
-    openFathulPage({ hlm: topic.anchor ? topic.anchor.hlm : topic.hlm, topicId: topic.id, query: ui.mode === 'search' ? highlightQueryFor(topic, ui.query) : '', lang });
+    closeSheet = openFathulPage({ hlm: topic.anchor ? topic.anchor.hlm : topic.hlm, topicId: topic.id, query: ui.mode === 'search' ? highlightQueryFor(topic, ui.query) : '', lang });
   }
 
   function onClick(e) {
@@ -217,6 +218,7 @@ export function renderFathulView(container, store) {
 
   return () => {
     alive = false;
+    closeSheet?.();
     clearTimeout(timer);
     unsubscribe();
     container.removeEventListener('input', onInput);

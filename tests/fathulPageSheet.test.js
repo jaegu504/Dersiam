@@ -102,6 +102,31 @@ describe("Fathul Mu'in full page sheet", () => {
     expect(document.activeElement).toBe(opener);
   });
 
+  // happy-dom's History is a stub (pushState stores nothing), so these use spies;
+  // the real back gesture is checked in the browser.
+  it('opening adds a history entry so the back gesture closes the sheet', () => {
+    const push = vi.spyOn(history, 'pushState');
+    openFathulPage({ hlm: 70, lang: 'id' });
+    expect(push).toHaveBeenCalledTimes(1);
+    expect(push.mock.calls[0][0]).toMatchObject({ fathulSheet: true });
+    push.mockRestore();
+    const back = vi.spyOn(history, 'back');
+    window.dispatchEvent(new PopStateEvent('popstate', { state: null }));
+    expect(sheet()).toBeNull();
+    expect(back).not.toHaveBeenCalled();
+    back.mockRestore();
+  });
+
+  it('closing with the button removes its own history entry', () => {
+    openFathulPage({ hlm: 70, lang: 'id' });
+    const state = vi.spyOn(history, 'state', 'get').mockReturnValue({ fathulSheet: true });
+    const back = vi.spyOn(history, 'back').mockImplementation(() => {});
+    sheet().querySelector('.modal-close-btn').click();
+    expect(back).toHaveBeenCalledTimes(1);
+    back.mockRestore();
+    state.mockRestore();
+  });
+
   it('the returned close function and the close button both close it', () => {
     const close = openFathulPage({ hlm: 70, lang: 'id' });
     close();

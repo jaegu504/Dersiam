@@ -126,6 +126,18 @@ describe("Fathul Mu'in view: search results", () => {
   });
 });
 
+describe("Fathul Mu'in view: leaving with a sheet open", () => {
+  it('unmounting the view closes an open page sheet', async () => {
+    await mount();
+    await search('basmalah');
+    container.querySelector('[data-open-topic]').click();
+    expect(document.querySelector('.fathul-sheet')).not.toBeNull();
+    unmount();
+    unmount = null;
+    expect(document.querySelector('.fathul-sheet')).toBeNull();
+  });
+});
+
 describe("Fathul Mu'in view: secondary ways", () => {
   it('Latihan Soal switches to the study view for fathul', async () => {
     await mount();
