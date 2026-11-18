@@ -182,14 +182,25 @@ def parse_topics(kitab_dir, pages):
     return chapters, topics, unanchored
 
 
+CLOZE_STOP = {normalize_arabic(w) for w in "من إلى على في عن بعد قبل مع أو ثم هو هي إن أن لا ما كان قال ذلك هذا التي الذي حتى مرة كل غير بين عند لو إذا".split()}
+
+
+def arabic_words(text):
+    # ARABIC_WORD also matches Arabic punctuation (، ؛ ؟); strip it from the edges
+    return [w.strip("،؛؟٪٫٬«»") for w in ARABIC_WORD.findall(text) if w.strip("،؛؟٪٫٬«»")]
+
+
 def cloze_word(topic):
-    title_words = {normalize_arabic(w) for w in ARABIC_WORD.findall(topic["titleAr"])}
-    words = ARABIC_WORD.findall(topic["ibarah"])
-    for w in words:
+    def usable(w):
         n = normalize_arabic(w)
-        if len(n) >= 3 and n in title_words:
+        return len(n) >= 3 and n not in CLOZE_STOP and not n.isdigit()
+
+    title_words = {normalize_arabic(w) for w in arabic_words(topic["titleAr"])}
+    words = [w for w in arabic_words(topic["ibarah"]) if usable(w)]
+    for w in words:
+        if normalize_arabic(w) in title_words:
             return w
-    first_line = ARABIC_WORD.findall(topic["ibarah"].split("\n")[0]) or words
+    first_line = [w for w in arabic_words(topic["ibarah"].split("\n")[0]) if usable(w)] or words
     return max(first_line, key=lambda w: len(normalize_arabic(w)))
 
 

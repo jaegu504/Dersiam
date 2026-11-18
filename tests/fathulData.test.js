@@ -75,3 +75,34 @@ describe("Fathul Mu'in corpus export", () => {
     expect(corpus.chapters[1].nameId).toBe('Shalat');
   });
 });
+
+describe("Fathul Mu'in question items", async () => {
+  const { default: questions } = await import('../src/data/fathul/questions.json');
+
+  it('builds valid Dersiam items from authored questions', () => {
+    expect(questions.length).toBeGreaterThanOrEqual(30);
+    for (const q of questions) {
+      expect(q.bookKey).toBe('fathul');
+      expect(q.question_id).toMatch(/\?$/);
+      expect(q.question_tr).toBe(q.question_id);
+      expect(q.answer_tr).toBe(q.answer_id);
+      expect(q.answer_id).toContain(`hlm ${q.hlm}`);
+      expect(q.answer_id).toContain(q.clozeKeyWord_id);
+      expect(q.chapterNameTr).toBeTruthy();
+      expect(q.chapterNameId).toBeTruthy();
+      expect(q.clozeKeyWord_id).not.toMatch(/[،؛؟.,:!()]/);
+      expect(['من', 'الى', 'إلى', 'على', 'في', 'عن', 'بعد', 'قبل', 'مع', 'ثم', 'مرة', 'كان', 'قال']).not.toContain(q.clozeKeyWord_id);
+    }
+    expect(new Set(questions.map((q) => q.topicId)).size).toBe(questions.length);
+  });
+
+  it('answers carry the topic ringkas and ibarah of the same topic', () => {
+    const byId = Object.fromEntries(corpus.topics.map((t) => [t.id, t]));
+    for (const q of questions) {
+      const t = byId[q.topicId];
+      expect(q.hlm).toBe(t.hlm);
+      expect(q.answer_id.startsWith(t.ringkas)).toBe(true);
+      expect(q.answer_id).toContain(t.ibarah.split('\n')[0]);
+    }
+  });
+});
