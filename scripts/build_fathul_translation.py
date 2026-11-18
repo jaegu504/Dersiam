@@ -4,9 +4,11 @@ Fails if any corpus page is missing, duplicated, or has a line count that differ
 Run: python3 scripts/build_fathul_translation.py
 """
 import json
+import re
 import sys
 from pathlib import Path
 
+ARABIC_LETTER = re.compile(r"[\u0621-\u064A]")
 ROOT = Path(__file__).resolve().parents[1]
 TR = ROOT / "scripts/fathul/translation"
 sys.path.insert(0, str(TR))
@@ -27,6 +29,10 @@ def main():
         errors.append(f"{len(missing)} pages missing: {missing[:20]}{' ...' if len(missing) > 20 else ''}")
     if errors:
         sys.exit("translation export failed:\n" + "\n".join(errors))
+    # Arabic lines that are only page filler (٠٠٠, ...) get no translation line in the UI.
+    for h, page in merged.items():
+        for k in FIELDS:
+            page[k] = [t if ARABIC_LETTER.search(a) else "" for a, t in zip(corpus[h][k], page[k])]
     out = {h: merged[h] for h in sorted(merged, key=int)}
     (ROOT / "src/data/fathul/translation-id.json").write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")))
     print(f"wrote translation-id.json: {len(out)} pages")

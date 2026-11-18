@@ -224,6 +224,13 @@ describe("Fathul Mu'in full page sheet", () => {
       expect(trLines('fathul-syarah').length).toBe(corpus.pages['70'].syarah.length);
     });
 
+    it('translation data covers every page with the same line counts as the Arabic', async () => {
+      const { default: tr } = await import('../src/data/fathul/translation-id.json');
+      const pages = Object.keys(corpus.pages);
+      expect(Object.keys(tr).sort()).toEqual(pages.sort());
+      for (const h of pages) for (const f of ['matn', 'syarah', 'footnotes']) expect(tr[h][f].length).toBe(corpus.pages[h][f].length);
+    });
+
     it('translates footnotes too', async () => {
       openFathulPage({ hlm: 2, lang: 'id' });
       btn('translate').click();
