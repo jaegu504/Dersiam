@@ -175,7 +175,9 @@ export const dictionary = {
     fathulMazhab: "Şâfiî Mezhebi",
     fathulBack: "Geri",
     fathulPages: "sayfa",
-    fathulTopics: "konu"
+    fathulTopics: "konu",
+    fathulTranslation: "Endonezce çeviri",
+    fathulTranslationNote: "serbest çeviri (Endonezce), Arapça metne başvurun"
   },
 
   id: {
@@ -349,6 +351,8 @@ export const dictionary = {
     fathulMazhab: "Mazhab Syafi'i",
     fathulBack: "Kembali",
     fathulPages: "halaman",
-    fathulTopics: "topik"
+    fathulTopics: "topik",
+    fathulTranslation: "Terjemahan",
+    fathulTranslationNote: "terjemahan bebas, rujuk teks Arab"
   }
 };

@@ -43,3 +43,14 @@ export function getFathulData() {
 export function isFathulLoaded() {
   return loaded;
 }
+
+let translationPromise = null;
+
+/** Indonesian translation lines keyed by hlm; a separate chunk loaded only when the reader turns it on. */
+export function loadFathulTranslation() {
+  translationPromise ??= import('./translation-id.json')
+    .then((m) => m.default)
+    .catch((err) => { translationPromise = null; throw err; });
+  return translationPromise;
+}
+

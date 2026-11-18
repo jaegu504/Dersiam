@@ -7,7 +7,7 @@
  */
 
 import { dictionary } from '../data/dictionary.js';
-import { getFathulData, loadFathul } from '../data/fathul/load.js';
+import { getFathulData, loadFathul, loadFathulTranslation } from '../data/fathul/load.js';
 import { highlightText } from '../services/fathulSearch.js';
 import { dialogIn } from '../services/motion.js';
 import { playPureSfx } from '../services/audio.js';
@@ -22,6 +22,16 @@ function readFontPref() {
 
 function writeFontPref(large) {
   try { localStorage.setItem(FONT_KEY, large ? 'large' : 'normal'); } catch { /* storage blocked */ }
+}
+
+const TRANSLATION_KEY = 'fathulTranslation';
+
+function readTranslationPref() {
+  try { return localStorage.getItem(TRANSLATION_KEY) === 'on'; } catch { return false; }
+}
+
+function writeTranslationPref(on) {
+  try { localStorage.setItem(TRANSLATION_KEY, on ? 'on' : 'off'); } catch { /* storage blocked */ }
 }
 
 /** Fasal of a page: the fasal of the last topic that starts on or before it. */
@@ -59,7 +69,8 @@ export function openFathulPage({ hlm, topicId = null, query = '', lang = 'id' })
   const topicsById = new Map(corpus.topics.map((t) => [t.id, t]));
   const fasalNames = new Map(corpus.chapters.flatMap((c) => c.fasals.map((f) => [f.id, { ...f, chapter: c }])));
 
-  const state = { hlm, topicId, large: readFontPref() };
+  const state = { hlm, topicId, large: readFontPref(), translate: readTranslationPref() };
+  let translation = null; // Indonesian lines keyed by hlm, loaded on first use
   const opener = typeof document !== 'undefined' ? document.activeElement : null;
 
   const backdrop = document.createElement('div');
@@ -72,8 +83,17 @@ export function openFathulPage({ hlm, topicId = null, query = '', lang = 'id' })
   backdrop.appendChild(sheet);
   document.body.appendChild(backdrop);
 
-  function paragraphs(lines, cls, refIndex = -1) {
-    return lines.map((line, i) => `<p class="${cls}${i === refIndex ? ' is-ref' : ''}" dir="rtl" lang="ar">${highlightText(line, query)}</p>`).join('');
+  function paragraphs(lines, cls, refIndex = -1, trLines = null) {
+    return lines.map((line, i) => `<p class="${cls}${i === refIndex ? ' is-ref' : ''}" dir="rtl" lang="ar">${highlightText(line, query)}</p>${
+      trLines?.[i] ? `<p class="fathul-tr" dir="ltr" lang="id">${highlightText(trLines[i], '')}</p>` : ''}`).join('');
+  }
+
+  function showTranslation() {
+    if (translation) return render();
+    loadFathulTranslation()
+      .then((t) => { translation = t; })
+      .catch(() => { state.translate = false; }) // offline: fall back to Arabic only, button un-pressed
+      .then(() => { if (sheet.isConnected) render(); });
   }
 
   function render() {
@@ -83,6 +103,7 @@ export function openFathulPage({ hlm, topicId = null, query = '', lang = 'id' })
     const fasal = fasalNames.get(fasalTopic.fasalId);
     const refIndex = topic?.anchor && topic.anchor.hlm === state.hlm ? topic.anchor.para : -1;
     const chapterName = lang === 'id' ? fasal.chapter.nameId : fasal.chapter.nameAr;
+    const tr = state.translate ? translation?.[String(state.hlm)] : null;
 
     const related = fasal.topicIds
       .filter((id) => id !== state.topicId)
@@ -100,14 +121,16 @@ export function openFathulPage({ hlm, topicId = null, query = '', lang = 'id' })
         <button type="button" class="modal-close-btn neu-button" aria-label="${dict.close}" title="${dict.close}">${getIconSvg('close', 18)}</button>
       </div>
       <div class="modal-body fathul-sheet-body">
-        ${page.matn.length ? `<section class="fathul-matn"><div class="fathul-label">${dict.fathulMatn}</div>${paragraphs(page.matn, 'fathul-matn-line font-arabic')}</section>` : ''}
-        <section class="fathul-syarah"><div class="fathul-label">${dict.fathulSyarah}</div>${paragraphs(page.syarah, 'fathul-para font-arabic', refIndex)}</section>
-        ${page.footnotes.length ? `<section class="fathul-footnotes"><div class="fathul-label">${dict.fathulFootnotes}</div>${paragraphs(page.footnotes, 'fathul-footnote font-arabic')}</section>` : ''}
+        ${tr ? `<p class="fathul-tr-note">${dict.fathulTranslationNote}</p>` : ''}
+        ${page.matn.length ? `<section class="fathul-matn"><div class="fathul-label">${dict.fathulMatn}</div>${paragraphs(page.matn, 'fathul-matn-line font-arabic', -1, tr?.matn)}</section>` : ''}
+        <section class="fathul-syarah"><div class="fathul-label">${dict.fathulSyarah}</div>${paragraphs(page.syarah, 'fathul-para font-arabic', refIndex, tr?.syarah)}</section>
+        ${page.footnotes.length ? `<section class="fathul-footnotes"><div class="fathul-label">${dict.fathulFootnotes}</div>${paragraphs(page.footnotes, 'fathul-footnote font-arabic', -1, tr?.footnotes)}</section>` : ''}
         ${related ? `<section class="fathul-related"><h4>${dict.fathulRelated}</h4><div class="fathul-related-list">${related}</div></section>` : ''}
       </div>
       <div class="modal-footer fathul-sheet-tools">
         <button type="button" class="neu-button" data-action="copy">${getIconSvg('copy', 16)}<span>${dict.fathulCopy}</span></button>
         <button type="button" class="neu-button" data-action="font" aria-pressed="${state.large}">${dict.fathulFontSize}</button>
+        <button type="button" class="neu-button" data-action="translate" aria-pressed="${state.translate}">${dict.fathulTranslation}</button>
         <span class="fathul-sheet-paging">
           <button type="button" class="neu-button" data-action="prev" aria-label="${dict.fathulPrevPage}" ${state.hlm <= firstPage ? 'disabled' : ''}>${getIconSvg('arrowLeft', 16)}<span>${state.hlm > firstPage ? `hlm ${state.hlm - 1}` : ''}</span></button>
           <button type="button" class="neu-button" data-action="next" aria-label="${dict.fathulNextPage}" ${state.hlm >= lastPage ? 'disabled' : ''}><span>${state.hlm < lastPage ? `hlm ${state.hlm + 1}` : ''}</span>${getIconSvg('arrowRight', 16)}</button>
@@ -160,6 +183,12 @@ export function openFathulPage({ hlm, topicId = null, query = '', lang = 'id' })
       writeFontPref(state.large);
       playPureSfx('toggle');
       render();
+    } else if (action === 'translate') {
+      state.translate = !state.translate;
+      writeTranslationPref(state.translate);
+      playPureSfx('toggle');
+      if (state.translate) showTranslation();
+      else render();
     }
   }
 
@@ -188,6 +217,7 @@ export function openFathulPage({ hlm, topicId = null, query = '', lang = 'id' })
   }
 
   render();
+  if (state.translate) showTranslation();
   backdrop.addEventListener('click', onClick);
   window.addEventListener('keydown', onKeyDown);
   if (typeof history !== 'undefined' && typeof history.pushState === 'function') {

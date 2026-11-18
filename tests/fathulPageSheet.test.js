@@ -15,7 +15,7 @@ beforeAll(async () => {
 
 afterEach(() => {
   document.body.innerHTML = '';
-  try { localStorage.removeItem('fathulFont'); } catch { /* storage may be blocked */ }
+  try { localStorage.removeItem('fathulFont'); localStorage.removeItem('fathulTranslation'); } catch { /* storage may be blocked */ }
 });
 
 describe("Fathul Mu'in full page sheet", () => {
@@ -160,5 +160,75 @@ describe("Fathul Mu'in full page sheet", () => {
   it('labels are translated in Turkish mode while the text stays Arabic', () => {
     openFathulPage({ hlm: 70, lang: 'tr' });
     expect(btn('next').getAttribute('aria-label')).toBe(dictionary.tr.fathulNextPage);
+  });
+
+  describe('Indonesian translation toggle', () => {
+    const trLines = (section) => sheet().querySelectorAll(`.${section} .fathul-tr`);
+    const arLines = (section) => sheet().querySelectorAll(`.${section} [lang="ar"]`);
+    const shown = () => vi.waitFor(() => expect(sheet().querySelectorAll('.fathul-tr').length).toBeGreaterThan(0));
+
+    it('is off by default and shows no translation lines', () => {
+      openFathulPage({ hlm: 70, lang: 'id' });
+      expect(btn('translate').getAttribute('aria-pressed')).toBe('false');
+      expect(btn('translate').textContent).toContain(dictionary.id.fathulTranslation);
+      expect(sheet().querySelector('.fathul-tr')).toBeNull();
+    });
+
+    it('shows one Indonesian line under each Arabic line, then hides them again', async () => {
+      openFathulPage({ hlm: 70, lang: 'id' });
+      btn('translate').click();
+      await shown();
+      expect(btn('translate').getAttribute('aria-pressed')).toBe('true');
+      for (const s of ['fathul-matn', 'fathul-syarah']) expect(trLines(s).length).toBe(arLines(s).length);
+      expect(trLines('fathul-syarah').length).toBe(corpus.pages['70'].syarah.length);
+      const first = sheet().querySelector('.fathul-syarah [lang="ar"]');
+      expect(first.nextElementSibling.classList.contains('fathul-tr')).toBe(true);
+      expect(first.nextElementSibling.getAttribute('lang')).toBe('id');
+      expect(sheet().textContent).toContain(dictionary.id.fathulTranslationNote);
+      btn('translate').click();
+      expect(sheet().querySelector('.fathul-tr')).toBeNull();
+      expect(btn('translate').getAttribute('aria-pressed')).toBe('false');
+    });
+
+    it('keeps the reference highlight and search marks on the Arabic', async () => {
+      const t = topicBy((x) => x.titleId === 'Basmalah dan tasydid dalam Fatihah');
+      openFathulPage({ hlm: 70, topicId: t.id, query: 'البسملة', lang: 'id' });
+      btn('translate').click();
+      await shown();
+      const ref = sheet().querySelectorAll('.is-ref');
+      expect(ref).toHaveLength(1);
+      expect(ref[0].getAttribute('lang')).toBe('ar');
+      expect(sheet().querySelector('.fathul-tr mark')).toBeNull();
+    });
+
+    it('remembers the choice for the next opening', async () => {
+      openFathulPage({ hlm: 70, lang: 'id' });
+      btn('translate').click();
+      await shown();
+      document.body.innerHTML = '';
+      openFathulPage({ hlm: 71, lang: 'id' });
+      await shown();
+      expect(btn('translate').getAttribute('aria-pressed')).toBe('true');
+    });
+
+    it('stays on across next / prev paging with matching line counts', async () => {
+      openFathulPage({ hlm: 71, lang: 'id' });
+      btn('translate').click();
+      await shown();
+      btn('next').click();
+      expect(header()).toContain('hlm 72');
+      expect(trLines('fathul-syarah').length).toBe(corpus.pages['72'].syarah.length);
+      btn('prev').click();
+      btn('prev').click();
+      expect(header()).toContain('hlm 70');
+      expect(trLines('fathul-syarah').length).toBe(corpus.pages['70'].syarah.length);
+    });
+
+    it('translates footnotes too', async () => {
+      openFathulPage({ hlm: 2, lang: 'id' });
+      btn('translate').click();
+      await shown();
+      expect(trLines('fathul-footnotes').length).toBe(corpus.pages['2'].footnotes.length);
+    });
   });
 });
