@@ -9,6 +9,7 @@ import { booksMetadata, getBookQuestions } from '../data/books.js';
 import { dictionary } from '../data/dictionary.js';
 import { playPureSfx } from '../services/audio.js';
 import { revealDown, slideSwap, pop, shake } from '../services/motion.js';
+import { mountGradedExam } from './gradedExam.js';
 
 const RING_C = 2 * Math.PI * 44;
 import { getIconSvg } from './icons.js';
@@ -107,7 +108,7 @@ export function renderExamView(container, store) {
   let state = store.getState();
   let activeBook = state.activeBook || 'quduri';
   let activeLang = state.activeLang || 'tr';
-  let examMode = state.examMode || 'oral'; // 'oral' | 'cloze'
+  let examMode = state.examMode || 'oral'; // 'oral' | 'cloze' | 'graded'
 
   let currentIndex = 0;
   let timer = 30;
@@ -140,6 +141,10 @@ export function renderExamView(container, store) {
             ${getIconSvg('pencil', 16)}
             <span class="tab-cloze-label font-bold text-xs sm:text-sm"></span>
           </button>
+          <button id="btn-tab-graded" class="neu-button ${examMode === 'graded' ? 'neu-button-primary active' : ''}" aria-label="Graded Exam">
+            ${getIconSvg('check', 16)}
+            <span class="tab-graded-label font-bold text-xs sm:text-sm"></span>
+          </button>
         </div>
 
         <!-- Exit Button -->
@@ -152,7 +157,9 @@ export function renderExamView(container, store) {
       </header>
 
       <!-- Exam Card Section -->
-      <article class="exam-card neu-card flex flex-col gap-6 p-6 md:p-8" id="exam-card">
+      <section id="graded-section" class="graded-section${examMode === 'graded' ? '' : ' hidden'}" aria-live="polite"></section>
+
+      <article class="exam-card neu-card flex flex-col gap-6 p-6 md:p-8${examMode === 'graded' ? ' hidden' : ''}" id="exam-card">
         <!-- Top Info Row -->
         <div class="flex items-center justify-between gap-2 border-b border-subtle pb-3">
           <div class="flex items-center gap-2">
@@ -234,6 +241,11 @@ export function renderExamView(container, store) {
   const btnExitExam = container.querySelector('#btn-exit-exam');
   const tabOralLabel = container.querySelector('.tab-oral-label');
   const tabClozeLabel = container.querySelector('.tab-cloze-label');
+  const btnTabGraded = container.querySelector('#btn-tab-graded');
+  const tabGradedLabel = container.querySelector('.tab-graded-label');
+  const gradedSection = container.querySelector('#graded-section');
+  const examCard = container.querySelector('#exam-card');
+  const graded = mountGradedExam(gradedSection, { store, getQuestions: () => questions, getBook: () => activeBook });
   const exitLabel = container.querySelector('.exit-label');
 
   const examBookBadge = container.querySelector('#exam-book-badge');
@@ -319,6 +331,7 @@ export function renderExamView(container, store) {
     // Localized labels
     tabOralLabel.textContent = dict.oralExamTab || (isTr ? 'Sözlü İmtihan (30sn)' : 'Ujian Lisan (30 Detik)');
     tabClozeLabel.textContent = dict.clozeExamTab || (isTr ? 'Boşluk Doldurma' : 'Tebak Kata Kunci');
+    tabGradedLabel.textContent = dict.gradedTab || (isTr ? 'Puanlı İmtihan' : 'Ujian Bernilai');
     exitLabel.textContent = dict.exitExam || (isTr ? 'İmtihandan Çık' : 'Keluar dari Ujian');
     timerUnitLabel.textContent = dict.timerSeconds || (isTr ? 'saniye' : 'detik');
     oralHintText.textContent = dict.examHintOral || '';
@@ -330,17 +343,14 @@ export function renderExamView(container, store) {
     nextExamLabel.textContent = dict.nextExamQuestion || (isTr ? 'Sonraki Soru' : 'Soal Selanjutnya');
 
     // Tab active states
-    if (examMode === 'oral') {
-      btnTabOral.classList.add('neu-button-primary', 'active');
-      btnTabCloze.classList.remove('neu-button-primary', 'active');
-      oralSection.classList.remove('hidden');
-      clozeSection.classList.add('hidden');
-    } else {
-      btnTabCloze.classList.add('neu-button-primary', 'active');
-      btnTabOral.classList.remove('neu-button-primary', 'active');
-      clozeSection.classList.remove('hidden');
-      oralSection.classList.add('hidden');
-    }
+    [[btnTabOral, 'oral'], [btnTabCloze, 'cloze'], [btnTabGraded, 'graded']].forEach(([btn, mode]) => {
+      btn.classList.toggle('neu-button-primary', examMode === mode);
+      btn.classList.toggle('active', examMode === mode);
+    });
+    oralSection.classList.toggle('hidden', examMode !== 'oral');
+    clozeSection.classList.toggle('hidden', examMode !== 'cloze');
+    gradedSection.classList.toggle('hidden', examMode !== 'graded');
+    examCard.classList.toggle('hidden', examMode === 'graded');
 
     // Top badges
     examBookBadge.textContent = isTr ? (bookMeta.titleTr || activeBook) : (bookMeta.titleId || activeBook);
@@ -427,6 +437,16 @@ export function renderExamView(container, store) {
     }
   });
 
+  btnTabGraded.addEventListener('click', () => {
+    if (examMode === 'graded') return;
+    examMode = 'graded';
+    store.setState({ examMode: 'graded' });
+    stopTimer();
+    playPureSfx('toggle');
+    updateView();
+    graded.refresh();
+  });
+
   btnCheckOral.addEventListener('click', () => {
     isOralRevealed = true;
     playPureSfx('reveal');
@@ -474,6 +494,7 @@ export function renderExamView(container, store) {
     if (newState.activeLang !== activeLang) {
       activeLang = newState.activeLang || 'tr';
       shouldUpdate = true;
+      graded.refresh();
     }
 
     if (newState.activeBook !== activeBook) {
@@ -484,6 +505,7 @@ export function renderExamView(container, store) {
       isOralRevealed = false;
       isClozeRevealed = false;
       shouldUpdate = true;
+      graded.refresh({ reset: true });
       if (examMode === 'oral') {
         startTimer();
       }
